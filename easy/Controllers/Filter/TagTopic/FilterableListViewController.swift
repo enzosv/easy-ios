@@ -71,8 +71,8 @@ class FilterableListViewController: UIViewController {
 					if topic.isIncluded {
 						included.append(filterRow)
 					}
-					if var section = sections[key] {
-						section.append(filterRow)
+					if sections[key] != nil {
+						sections[key]?.append(filterRow)
 					} else {
 						sections[key] = [filterRow]
 					}
@@ -86,8 +86,8 @@ class FilterableListViewController: UIViewController {
 					if tag.isIncluded {
 						included.append(filterRow)
 					}
-					if var section = sections[key] {
-						section.append(filterRow)
+					if sections[key] != nil {
+						sections[key]?.append(filterRow)
 					} else {
 						sections[key] = [filterRow]
 					}
