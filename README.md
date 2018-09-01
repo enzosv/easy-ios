@@ -1,10 +1,7 @@
 # Easy app
 Easy is an unofficial [Medium](https://medium.com/) broswer that makes it... easy to find posts you're interested in.
 ## Screenshots
-![Main](https://github.com/enzosv/easy-ios/blob/master/Screenshots/Main.png)
-![Filters](https://github.com/enzosv/easy-ios/blob/master/Screenshots/Filtes.png)
-![History](https://github.com/enzosv/easy-ios/blob/master/Screenshots/History.png)
-![Topics](https://github.com/enzosv/easy-ios/blob/master/Screenshots/Topics.png)
+![Easy](https://github.com/enzosv/easy-ios/blob/master/Screenshots/easy.png)
 ## Features
 * View claps and recommendations before reading post
 * Hide premium posts
