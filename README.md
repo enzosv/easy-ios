@@ -24,8 +24,8 @@ open easy.xcworkspace
 Inspired by [Top Medium Stories](https://topmediumstories.com/)
 ### Libraries used
 * [Alamofire](https://github.com/Alamofire/Alamofire) ([MIT](https://raw.githubusercontent.com/Alamofire/Alamofire/master/LICENSE))
-* [RealmSwift](https://realm.io/docs/swift/latest/) ([Apache](https://github.com/realm/realm-cocoa/master/LICENSE))
-* [SwiftLint](https://github.com/realm/SwiftLint) ([MIT](https://github.com/realm/SwiftLint/master/LICENSE))
+* [RealmSwift](https://github.com/realm/realm-cocoa) ([Apache](https://raw.githubusercontent.com/realm/realm-cocoa/master/LICENSE))
+* [SwiftLint](https://github.com/realm/SwiftLint) ([MIT](https://raw.githubusercontent.com/realm/SwiftLint/master/LICENSE))
 * [PromiseKit](https://github.com/mxcl/PromiseKit) ([MIT](https://raw.githubusercontent.com/mxcl/PromiseKit/master/LICENSE))
 * [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) ([MIT](https://raw.githubusercontent.com/SwiftyJSON/SwiftyJSON/master/LICENSE))
 * [SwiftyUserDefaults](https://github.com/radex/SwiftyUserDefaults) ([MIT](https://raw.githubusercontent.com/radex/SwiftyUserDefaults/master/LICENSE))
