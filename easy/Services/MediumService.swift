@@ -115,6 +115,7 @@ class MediumService {
 					if let pending = self.requests.first {
 						self.performRequest(pending)
 					} else {
+						self.completedRequestCount = 0
 						self.onAllCompletion?()
 					}
 				})
