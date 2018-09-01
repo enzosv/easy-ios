@@ -26,6 +26,7 @@ class FilterListViewController: UIViewController {
 		let label = UILabel()
 		label.text = "Show Premium Articles"
 		label.textColor = Constants.Colors.Text.SUBTITLE
+		label.font = .preferredFont(forTextStyle: .body)
 		return label
 	}()
 
@@ -45,6 +46,8 @@ class FilterListViewController: UIViewController {
 		let label = UILabel()
 		label.text = "Show Ignored Articles"
 		label.textColor = Constants.Colors.Text.SUBTITLE
+		label.font = .preferredFont(forTextStyle: .body)
+		label.adjustsFontForContentSizeCategory = true
 		return label
 	}()
 
@@ -59,6 +62,8 @@ class FilterListViewController: UIViewController {
 		button.setTitle("Topics", for: .normal)
 		button.tintColor = Constants.Colors.Text.SUBTITLE
 		button.backgroundColor = Constants.Colors.DARK
+		button.titleLabel?.font = .preferredFont(forTextStyle: .body)
+		button.titleLabel?.adjustsFontForContentSizeCategory = true
 		return button
 	}()
 
@@ -67,6 +72,8 @@ class FilterListViewController: UIViewController {
 		button.setTitle("Tags", for: .normal)
 		button.tintColor = Constants.Colors.Text.SUBTITLE
 		button.backgroundColor = Constants.Colors.DARK
+		button.titleLabel?.font = .preferredFont(forTextStyle: .body)
+		button.titleLabel?.adjustsFontForContentSizeCategory = true
 		return button
 	}()
 

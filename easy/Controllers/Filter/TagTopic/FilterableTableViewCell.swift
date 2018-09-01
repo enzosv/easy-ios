@@ -13,6 +13,8 @@ class FilterableTableViewCell: UITableViewCell {
 	private let nameLabel: UILabel = {
 		let label = UILabel()
 		label.textColor = Constants.Colors.Text.SUBTITLE
+		label.adjustsFontForContentSizeCategory = true
+		label.font = .preferredFont(forTextStyle: .body)
 		return label
 	}()
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -45,10 +47,9 @@ class FilterableTableViewCell: UITableViewCell {
 	}
 
 	private func configureLabel(isIncluded: Bool) {
-		let pointSize = nameLabel.font.pointSize
 		nameLabel.font = isIncluded
-			? UIFont.boldSystemFont(ofSize: pointSize)
-			: UIFont.systemFont(ofSize: pointSize)
+			? .preferredFont(forTextStyle: .headline)
+			: .preferredFont(forTextStyle: .body)
 		nameLabel.textColor = isIncluded
 			? Constants.Colors.Text.TITLE
 			: Constants.Colors.Text.SUBTITLE

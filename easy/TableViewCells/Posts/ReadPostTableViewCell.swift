@@ -19,12 +19,16 @@ class ReadPostTableViewCell: PostTableViewCell {
 	private let upvoteButton: UIButton = {
 		let button = UIButton(type: .system)
 		button.setTitle("⇧", for: .normal)
+		button.titleLabel?.font = .preferredFont(forTextStyle: .body)
+		button.titleLabel?.adjustsFontForContentSizeCategory = true
 		return button
 	}()
 
 	private let downvoteButton: UIButton = {
 		let button = UIButton(type: .system)
 		button.setTitle("⇩", for: .normal)
+		button.titleLabel?.font = .preferredFont(forTextStyle: .body)
+		button.titleLabel?.adjustsFontForContentSizeCategory = true
 		return button
 	}()
 
@@ -32,7 +36,8 @@ class ReadPostTableViewCell: PostTableViewCell {
 		let label = UILabel()
 		label.textAlignment = .center
 		label.textColor = Constants.Colors.Text.SUBTITLE
-		label.font = UIFont.systemFont(ofSize: 12)
+		label.font = .preferredFont(forTextStyle: .caption1)
+		label.adjustsFontForContentSizeCategory = true
 		return label
 	}()
 

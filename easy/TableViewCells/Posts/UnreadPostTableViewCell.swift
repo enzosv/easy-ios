@@ -13,6 +13,8 @@ class UnreadPostTableViewCell: PostTableViewCell {
 		let button = UIButton(type: .system)
 		button.tintColor = Constants.Colors.Text.SUBTITLE
 		button.backgroundColor = .black
+		button.titleLabel?.font = .preferredFont(forTextStyle: .body)
+		button.titleLabel?.adjustsFontForContentSizeCategory = true
 		return button
 	}()
 

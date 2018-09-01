@@ -15,13 +15,15 @@ fileprivate extension UILabel {
 		label.font = font
 		label.numberOfLines = 0
 		label.lineBreakMode = .byWordWrapping
+		label.adjustsFontForContentSizeCategory = true
 		return label
 	}
 
 	static func makeForSubtitle() -> UILabel {
 		let label = UILabel()
 		label.textColor = Constants.Colors.Text.SUBTITLE
-		label.font = UIFont.systemFont(ofSize: 13)
+		label.font = .preferredFont(forTextStyle: .footnote)
+		label.adjustsFontForContentSizeCategory = true
 		return label
 	}
 }
@@ -29,7 +31,7 @@ fileprivate extension UILabel {
 class PostTableViewCell: UITableViewCell {
 
 	private let titleLabel: UILabel =
-		UILabel.make(font: .systemFont(ofSize: 16, weight: .semibold),
+		UILabel.make(font: .preferredFont(forTextStyle: .headline),
 					 color: Constants.Colors.Text.TITLE)
 
 	private let reasonLabel: UILabel = UILabel.makeForSubtitle()
@@ -46,6 +48,8 @@ class PostTableViewCell: UITableViewCell {
 		let button = UIButton(type: .system)
 		button.tintColor = Constants.Colors.Text.SUBTITLE
 		button.backgroundColor = .black
+		button.titleLabel?.font = .preferredFont(forTextStyle: .body)
+		button.titleLabel?.adjustsFontForContentSizeCategory = true
 		return button
 	}()
 
@@ -53,6 +57,8 @@ class PostTableViewCell: UITableViewCell {
 		let button = UIButton(type: .system)
 		button.tintColor = Constants.Colors.Text.SUBTITLE
 		button.backgroundColor = .black
+		button.titleLabel?.font = .preferredFont(forTextStyle: .body)
+		button.titleLabel?.adjustsFontForContentSizeCategory = true
 		return button
 	}()
 
