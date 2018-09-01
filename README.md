@@ -1,16 +1,27 @@
 # Easy app
 Easy is an unofficial [Medium](https://medium.com/) broswer that makes it... easy to find posts you're interested in.
+## Screenshots
+![Main](https://github.com/enzosv/easy-ios/blob/master/Screenshots/Main.png)
+![Filters](https://github.com/enzosv/easy-ios/blob/master/Screenshots/Filtes.png)
+![History](https://github.com/enzosv/easy-ios/blob/master/Screenshots/History.png)
+![Topics](https://github.com/enzosv/easy-ios/blob/master/Screenshots/Topics.png)
 ## Features
 * View claps and recommendations before reading post
 * Hide premium posts
 * Hide posts you're not interested in
 * View only topics/tags you're interested in*
-*Right now, this only fetches posts so topics and tags will populate as the app becomes aware of more posts and their accompanying topics and tags
+    *Right now, this only fetches posts so topics and tags will populate as the app becomes aware of more posts and their accompanying topics and tags
 * View and organize read posts by date or "upvotes"
 ## This is unofficial
 * This won't be published to the AppStore
 * This can break at anytime if Medium decides to change things
 * This does not sync to your Medium account
+## Running
+```shell
+git clone https://github.com/enzosv/easy-ios.git && cd easy-ios
+pod install
+open easy.xcworkspace
+```
 ## Credits
 Inspired by [Top Medium Stories](https://topmediumstories.com/)
 ### Libraries used
