@@ -6,11 +6,12 @@ Easy is an unofficial [Medium](https://medium.com/) broswer that makes it... eas
 * View claps and recommendations before reading post
 * Hide premium posts
 * Hide posts you're not interested in
-* View only topics/tags you're interested in*
+* View only topics/tags you're interested in*\
     *Right now, this only fetches posts so topics and tags will populate as the app becomes aware of more posts and their accompanying topics and tags
 * View and organize read posts by date or "upvotes"
 ## This is unofficial
-* This won't be published to the AppStore
+* I am not affiliated with Medium
+* This will not be published to the AppStore
 * This can break at anytime if Medium decides to change things
 * This does not sync to your Medium account
 ## Running
