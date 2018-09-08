@@ -101,13 +101,16 @@ class PostReviewView: UIView {
 		return button
 	}()
 
+	private let post: Post
 	init(post: Post) {
+		self.post = post
 		super.init(frame: .zero)
 		setup()
 		titleLabel.text = post.title
 		upvoteCountLabel.text = "\(post.upvoteCount)"
 		upvoteButton.tintColor = post.upvoteCount > 0 ? .blue : Constants.Colors.Text.SUBTITLE
 		downvoteButton.tintColor = post.upvoteCount < 0 ? .red : Constants.Colors.Text.SUBTITLE
+		setupActions()
 	}
 
 	required init?(coder aDecoder: NSCoder) {
@@ -134,6 +137,33 @@ class PostReviewView: UIView {
 		addSubview(titleView)
 		addSubview(rightBorder)
 		addSubview(undoButton)
+	}
+
+	private func setupActions() {
+		upvoteButton.addTarget(self, action: #selector(upvoteAction(sender:)), for: .touchUpInside)
+		downvoteButton.addTarget(self, action: #selector(downvoteAction(sender:)), for: .touchUpInside)
+		undoButton.addTarget(self, action: #selector(undoAction(sender:)), for: .touchUpInside)
+	}
+
+	private func setUpvotes(_ upvotes: Int) {
+		upvoteCountLabel.text = "\(upvotes)"
+		upvoteButton.tintColor = upvotes > 0 ? .blue : Constants.Colors.Text.SUBTITLE
+		downvoteButton.tintColor = upvotes < 0 ? .red : Constants.Colors.Text.SUBTITLE
+	}
+
+	@objc private func upvoteAction(sender: UIButton) {
+		post.incrementUpvotes(1)
+		setUpvotes(post.upvoteCount)
+	}
+
+	@objc private func downvoteAction(sender: UIButton) {
+		post.incrementUpvotes(-1)
+		setUpvotes(post.upvoteCount)
+	}
+
+	@objc private func undoAction(sender: UIButton) {
+		post.markAsRead(isRead: false)
+		remove(animated: true, completion: nil)
 	}
 
 	func remakeLayout() {
