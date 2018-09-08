@@ -118,18 +118,28 @@ class Post: Object {
 	}
 
 	var reasonForShowing: String {
-		let included = topics.filter("isIncluded == true")
-		if let first = included.first {
-			if first.topicId == Topic.POPULARID {
-				return included[safe: 1]?.name ?? first.name
-			}
-			return first.name
+		let includedTopics = topics.filter("isIncluded == true")
+		if let name = includedTopics.filter("topicId != %@", Topic.POPULARID).first?.name {
+			return name
+		} else if let name = tags.filter("isIncluded == true").first?.name {
+			return name
+		} else if let name = includedTopics.first?.name {
+			return name
+		} else if let name = topics.first?.name {
+			return name
+		} else if let name = tags.first?.name {
+			return name
+		} else {
+			assertionFailure("should have a reason")
+			return ""
 		}
-
-		return
-			tags.filter("isIncluded == true").first?.name
-				?? topics.first?.name
-				?? tags.first?.name ?? ""
+//		return
+//			includedTopics.filter("topicId != %@", Topic.POPULARID).first?.name
+//				?? tags.filter("isIncluded == true").first?.name
+//				?? includedTopics.first?.name
+//				?? topics.first?.name
+//				?? tags.first?.name
+//				?? ""
 	}
 
 	func markAsRead(isRead: Bool) {
