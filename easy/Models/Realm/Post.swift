@@ -29,6 +29,7 @@ class Post: Object {
 	@objc dynamic var dateRead: Date?
 	@objc dynamic var isIgnored: Bool = false
 	@objc dynamic var upvoteCount: Int = 0
+	@objc dynamic var author: String?
 
 	let tags = List<Tag>()
 	let topics = List<Topic>()
@@ -41,7 +42,7 @@ class Post: Object {
 		return "postId"
 	}
 
-	static func newFromJSON(_ json: JSON) -> Post? {
+	static func newFromJSON(_ json: JSON, author: String?) -> Post? {
 		guard
 			let postId = json["id"].string,
 			let updatedAt = json["updatedAt"].double
@@ -76,12 +77,16 @@ class Post: Object {
 		post.totalClapCount = totalClapCount
 		post.tags.append(objectsIn: tags)
 		post.topics.append(objectsIn: topics)
+		post.author = author
 
 		//DERIVED VALUES
 		post.queryString = {
 			var queryStrings: [String] = [title]
 			queryStrings.append(contentsOf: tags.map {$0.name})
 			queryStrings.append(contentsOf: topics.map {$0.name})
+			if let author = author {
+				queryStrings.append(author)
+			}
 			return queryStrings.joined(separator: " ").lowercased()
 		}()
 

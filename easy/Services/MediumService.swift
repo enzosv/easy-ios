@@ -154,7 +154,8 @@ class MediumService {
 		guard
 			let payload = json["payload"].dictionary,
 			let references = payload["references"]?.dictionary,
-			let posts = references["Post"]?.dictionary
+			let posts = references["Post"]?.dictionary,
+			let users = references["User"]?.dictionary
 			else {
 				//happens when search is empty
 				print("⚠️ invalid posts json: \(jsonString)")
@@ -162,7 +163,15 @@ class MediumService {
 		}
 		var pendingPosts = [Post]()
 		for (_, json) in posts {
-			guard let post = Post.newFromJSON(json) else {
+			let author: String? = {
+				guard let userId = json["creatorId"].string,
+					let user = users[userId]?.dictionary else {
+						return nil
+				}
+				return user["name"]?.string
+			}()
+
+			guard let post = Post.newFromJSON(json, author: author) else {
 				continue
 			}
 			pendingPosts.append(post)

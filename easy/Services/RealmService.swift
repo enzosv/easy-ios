@@ -13,7 +13,7 @@ class RealmService {
 
 	static func performMigration() {
 		let config = Realm.Configuration(
-			schemaVersion: 3,
+			schemaVersion: 4,
 			migrationBlock: { _, _ in
 
 		})
