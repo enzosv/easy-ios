@@ -15,8 +15,8 @@ private let readIdentifier = "readPostCell"
 
 class PostListLogicController: NSObject, PostOptionsPresenter {
 
-	private var posts: Results<Post> = Post.filtered.sorted(byKeyPath: "clapsPerDay", ascending: false)
-	private var notificationToken: NotificationToken?
+	private var posts: [Results<Post>]!
+	private var notificationTokens: [NotificationToken?] = []
 	var onPresentRequest: ((UIViewController) -> Void)?
 
 	private let viewController: PostListViewController
@@ -41,7 +41,9 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 	var sortType: ListSortType = ListSortType.byClapCountPerDayDescending
 
 	deinit {
-		notificationToken?.invalidate()
+		for token in notificationTokens {
+			token?.invalidate()
+		}
 		preconditionFailure("main view controller should never deinit")
 	}
 
@@ -132,11 +134,19 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 
 	// MARK: Inputs
 	func setupPosts(sortType: ListSortType) {
-		self.posts = Post.all.filter(sortType.filter).sorted(by: sortType.sortDescriptors)
+		self.posts = sortType.posts
 		self.viewController.table.reloadData()
-		notificationToken = self.posts.observe({ [weak self] changes in
-			self?.viewController.table.applyChanges(changes: changes, section: 0, additionalUpdates: nil)
-		})
+
+		for token in notificationTokens {
+			token?.invalidate()
+		}
+		notificationTokens = []
+		for (section, post) in posts.enumerated() {
+			notificationTokens.append(post.observe({ [weak self] changes in
+				self?.viewController.table.applyChanges(changes: changes, section: section, additionalUpdates: nil)
+			}))
+		}
+
 	}
 
 	func setupSearch(field: UITextField) {
@@ -264,15 +274,15 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 
 extension PostListLogicController: UITableViewDataSource {
 	func numberOfSections(in tableView: UITableView) -> Int {
-		return 1
-	}
-
-	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return posts.count
 	}
 
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		return posts[safe: section]?.count ?? 0
+	}
+
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		guard let post = posts[safe: indexPath.row] else {
+		guard let post = posts[safe: indexPath.section]?[safe: indexPath.row] else {
 			assertionFailure("\(indexPath.row) out of bounds. \(posts.count) total")
 			return UITableViewCell()
 		}
@@ -316,7 +326,7 @@ extension PostListLogicController: UITableViewDelegate {
 
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
-		guard let post = posts[safe: indexPath.row],
+		guard let post = posts[safe:indexPath.section]?[safe: indexPath.row],
 			let url = URL(string: "https://medium.com/posts/\(post.postId)"),
 			UIApplication.shared.canOpenURL(url) else {
 				return

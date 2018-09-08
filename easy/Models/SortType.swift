@@ -34,7 +34,7 @@ enum ListSortType {
 		}
 	}
 
-	var sortDescriptors: [SortDescriptor] {
+	private var sortDescriptors: [SortDescriptor] {
 		switch self {
 		case .byClapCountPerDayDescending:
 			return [SortDescriptor(keyPath: "clapsPerDay", ascending: false)]
@@ -55,11 +55,17 @@ enum ListSortType {
 		}
 	}
 
-	var filter: NSPredicate {
+	private var filters: [NSPredicate] {
 		if case .search(let query) = self {
 			let words = query.lowercased().components(separatedBy: " ")
-			let searchPredicates = words.map {NSPredicate(format: "queryString CONTAINS %@", $0)}
-			return NSCompoundPredicate(orPredicateWithSubpredicates: searchPredicates)
+			let orPredicates = NSCompoundPredicate(orPredicateWithSubpredicates:
+				words.map {NSPredicate(format: "queryString CONTAINS %@", $0)})
+			let searchPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+				NSPredicate(format: "NOT queryString BEGINSWITH %@ AND NOT author BEGINSWITH %@", query, query),
+								 orPredicates])
+			return [NSPredicate(format: "queryString BEGINSWITH %@", query),
+					NSPredicate(format: "author BEGINSWITH %@", query),
+					searchPredicate]
 		}
 
 		var andPredicates = [NSPredicate]()
@@ -82,7 +88,13 @@ enum ListSortType {
 		case .search:
 			assertionFailure("handle this before creating andpredicates")
 		}
-		return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+		return [NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)]
+	}
+
+	var posts: [Results<Post>] {
+		let all = Post.all
+		let sorts = sortDescriptors
+		return filters.map {all.filter($0).sorted(by: sorts)}
 	}
 }
 
