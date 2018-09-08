@@ -141,8 +141,10 @@ class Post: Object {
 			assertionFailure("not in realm yet")
 			return
 		}
+		// REVIEW: consider resetting upvotes
+		let date = isRead ? Date() : nil
 		try? realm.write {
-			self.dateRead = isRead ? Date() : nil
+			self.dateRead = date
 		}
 	}
 

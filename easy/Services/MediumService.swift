@@ -124,8 +124,6 @@ class MediumService {
 				print(error.localizedDescription)
 		}
 
-		
-
 		currentDataRequest = Alamofire.request(urlString, headers: ["accept": "application/json"])
 		assert(currentDataRequest != nil, "\(urlString) is invalid")
 
