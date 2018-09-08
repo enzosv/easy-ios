@@ -70,6 +70,7 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 	}
 
 	@objc private func searchChanged(sender: UITextField) {
+		viewController.hideReview()
 		tintClearIfNeeded(sender: sender)
 		search(query: sender.text)
 	}
@@ -352,7 +353,13 @@ extension PostListLogicController: UITableViewDelegate {
 
 extension PostListLogicController: UITextFieldDelegate {
 	func textFieldShouldClear(_ textField: UITextField) -> Bool {
+		viewController.hideReview()
 		search(query: nil)
+		return true
+	}
+
+	func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+		viewController.hideReview()
 		return true
 	}
 }
