@@ -48,10 +48,6 @@ class Post: Object {
 			else {
 				return nil
 		}
-//		if let existing = Post.existing(with: id),
-//			existing.updatedAt == updatedAt {
-//			return nil
-//		}
 		guard
 			let createdAt = json["createdAt"].double,
 			let firstPublishedAt = json["firstPublishedAt"].double,
@@ -133,13 +129,6 @@ class Post: Object {
 			assertionFailure("should have a reason")
 			return ""
 		}
-//		return
-//			includedTopics.filter("topicId != %@", Topic.POPULARID).first?.name
-//				?? tags.filter("isIncluded == true").first?.name
-//				?? includedTopics.first?.name
-//				?? topics.first?.name
-//				?? tags.first?.name
-//				?? ""
 	}
 
 	func markAsRead(isRead: Bool) {
