@@ -237,6 +237,7 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 
 	// MARK: Selectors
 	@objc func sortByAction(sender: UIBarButtonItem) {
+		viewController.hideReview()
 		guard let listMode = listModes[safe: selectedListModeIndex] else {
 			assertionFailure("\(selectedListModeIndex) out of bounds")
 			return
@@ -259,6 +260,7 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 	}
 
 	@objc func listSwitch(sender: UISegmentedControl) {
+		viewController.hideReview()
 		selectedListModeIndex = sender.selectedSegmentIndex
 		// TODO: consider previously selected type for mode
 		guard let listMode = listModes[safe: selectedListModeIndex],
@@ -292,7 +294,11 @@ extension PostListLogicController: UITableViewDataSource {
 				return UITableViewCell()
 			}
 
-			cell.configure(with: post, onOptionsClick: { [unowned self] post in
+			cell.configure(
+				with: post,
+				onToggleReadClick: nil,
+				onOptionsClick: { [unowned self] post in
+					self.viewController.hideReview()
 				self.showOptions(for: post)
 			})
 			return cell
@@ -302,8 +308,14 @@ extension PostListLogicController: UITableViewDataSource {
 				return UITableViewCell()
 			}
 
-			cell.configure(with: post, onOptionsClick: { [unowned self] post in
-				self.sharePost(post)
+			cell.configure(
+				with: post,
+				onToggleReadClick: { [unowned self] post in
+					self.viewController.hideReview()
+					self.viewController.showReview(for: post)
+				}, onOptionsClick: { [unowned self] post in
+					self.viewController.hideReview()
+					self.sharePost(post)
 			})
 			return cell
 		}
@@ -314,6 +326,7 @@ extension PostListLogicController: UITableViewDataSource {
 extension PostListLogicController: UITableViewDelegate {
 	func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
 		viewController.resignFirstResponder()
+		viewController.hideReview()
 	}
 
 	func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -326,6 +339,7 @@ extension PostListLogicController: UITableViewDelegate {
 
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
+		viewController.hideReview()
 		guard let post = posts[safe:indexPath.section]?[safe: indexPath.row],
 			let url = URL(string: "https://medium.com/posts/\(post.postId)"),
 			UIApplication.shared.canOpenURL(url) else {

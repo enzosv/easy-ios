@@ -67,6 +67,8 @@ class PostListViewController: UIViewController {
 		return button
 	}()
 
+	private var reviewView: PostReviewView?
+
 	lazy var logicController: PostListLogicController
 		= PostListLogicController(controller: self)
 
@@ -153,6 +155,50 @@ class PostListViewController: UIViewController {
 			self.searchFieldContainer.superview?.layoutIfNeeded()
 			self.listSwitcher.alpha = alpha
 		}
+	}
+
+	func showReview(for post: Post) {
+		let reviewView = PostReviewView(post: post)
+		view.addSubview(reviewView)
+
+		reviewView.snp.remakeConstraints { make in
+			make.top.equalTo(view.snp.bottom)
+				.offset(view.safeAreaInsets.bottom)
+			make.centerX.equalToSuperview()
+			make.width.equalToSuperview().inset(32)
+		}
+		reviewView.superview?.layoutIfNeeded()
+		reviewView.remakeLayout()
+		reviewView.snp.remakeConstraints { make in
+			make.bottom.equalToSuperview().inset(view.safeAreaInsets.bottom+20)
+			make.centerX.equalToSuperview()
+			make.width.equalToSuperview().inset(32)
+		}
+		reviewView.layoutIfNeeded()
+		UIView.animate(withDuration: 0.3, animations: {
+			reviewView.superview?.layoutIfNeeded()
+		}, completion: { _ in
+			self.reviewView = reviewView
+		})
+	}
+
+	func hideReview() {
+		guard let reviewView = reviewView else {
+			return
+		}
+		reviewView.snp.remakeConstraints { make in
+			make.top.equalTo(view.snp.bottom)
+				.offset(view.safeAreaInsets.bottom)
+			make.centerX.equalToSuperview()
+			make.width.equalToSuperview().inset(32)
+		}
+		UIView.animate(withDuration: 0.3, animations: {
+			reviewView.superview?.layoutIfNeeded()
+			reviewView.alpha = 0
+		}, completion: { _ in
+			reviewView.removeFromSuperview()
+			self.reviewView = nil
+		})
 	}
 
 }

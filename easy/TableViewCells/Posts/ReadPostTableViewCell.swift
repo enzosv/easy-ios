@@ -42,7 +42,7 @@ class ReadPostTableViewCell: PostTableViewCell {
 	}()
 
 	private var post: Post?
-	private var onOptionsClick: ((Post) -> Void)?
+	private var onOptionsClick: PostCallback?
 
 	override func setup() {
 		super.setup()
@@ -81,8 +81,11 @@ class ReadPostTableViewCell: PostTableViewCell {
 		}
 	}
 
-	override func configure(with post: Post, onOptionsClick: ((Post) -> Void)?) {
-		super.configure(with: post, onOptionsClick: onOptionsClick)
+	override func configure(
+		with post: Post,
+		onToggleReadClick: PostCallback?,
+		onOptionsClick: PostCallback?) {
+		super.configure(with: post, onToggleReadClick: onToggleReadClick, onOptionsClick: onOptionsClick)
 		self.post = post
 		self.onOptionsClick = onOptionsClick
 		upvoteCountLabel.text = "\(post.upvoteCount)"

@@ -19,7 +19,8 @@ class UnreadPostTableViewCell: PostTableViewCell {
 	}()
 
 	private var post: Post?
-	private var onOptionsClick: ((Post) -> Void)?
+	private var onToggleReadClick: PostCallback?
+	private var onOptionsClick: PostCallback?
 	override func setup() {
 		super.setup()
 		optionsView.addSubview(leftOptionButton)
@@ -40,9 +41,13 @@ class UnreadPostTableViewCell: PostTableViewCell {
 		}
 	}
 
-	override func configure(with post: Post, onOptionsClick: ((Post) -> Void)?) {
-		super.configure(with: post, onOptionsClick: onOptionsClick)
+	override func configure(
+		with post: Post,
+		onToggleReadClick: PostCallback?,
+		onOptionsClick: PostCallback?) {
+		super.configure(with: post, onToggleReadClick: onToggleReadClick, onOptionsClick: onOptionsClick)
 		self.post = post
+		self.onToggleReadClick = onToggleReadClick
 		self.onOptionsClick = onOptionsClick
 		leftOptionButton.setTitle(post.isIgnored ? "Show" : "Ignore", for: .normal)
 	}
@@ -60,6 +65,8 @@ class UnreadPostTableViewCell: PostTableViewCell {
 			assertionFailure("post must exist")
 			return
 		}
+		onToggleReadClick?(post)
+		//TODO: popup asking for upvotes
 		post.markAsRead(isRead: true)
 	}
 
