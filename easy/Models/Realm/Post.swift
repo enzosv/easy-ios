@@ -117,48 +117,6 @@ class Post: Object {
 		return realm.objects(Post.self)
 	}
 
-	static var unread: Results<Post> {
-		return all.filter("dateRead == nil")
-	}
-
-	static var read: Results<Post> {
-		let sortProperties: [SortDescriptor] = {
-			if HistorySortType(rawValue: Defaults[.historySortType]) == HistorySortType.byUpvoteCountDescending {
-				return [
-					SortDescriptor(keyPath: "upvoteCount", ascending: false),
-					SortDescriptor(keyPath: "dateRead", ascending: false)
-				]
-			} else {
-				return [SortDescriptor(keyPath: "dateRead", ascending: false)]
-			}
-		}()
-
-		return all.filter("dateRead != nil").sorted(by: sortProperties)
-	}
-
-//	static var freePosts: Results<Post>{
-//		return unread.filter("isSubscriptionLocked == false")
-//	}
-
-	static var filtered: Results<Post> {
-		let predicate: NSPredicate = {
-			var andPredicates = [NSPredicate]()
-			if !Defaults[.isPremiumIncluded] {
-				andPredicates.append(NSPredicate(format: "isSubscriptionLocked == false"))
-			}
-			if !Defaults[.isShowingIgnored] {
-				andPredicates.append(NSPredicate(format: "isIgnored == false"))
-			}
-			if Topic.included.count > 0 || Tag.included.count > 0 {
-				andPredicates.append(NSPredicate(format: "ANY topics.isIncluded == true OR ANY tags.isIncluded == true"))
-			}
-			return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-		}()
-
-		let results: Results<Post> = unread.filter(predicate)
-		return results
-	}
-
 	var reasonForShowing: String {
 		let included = topics.filter("isIncluded == true")
 		if let first = included.first {

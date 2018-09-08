@@ -20,6 +20,7 @@
 		C63534E020F907E90020BE22 /* PostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63534DF20F907E90020BE22 /* PostTableViewCell.swift */; };
 		C63534E220F916EA0020BE22 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63534E120F916EA0020BE22 /* Extensions.swift */; };
 		C63534E920F927DF0020BE22 /* Topic.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63534E820F927DF0020BE22 /* Topic.swift */; };
+		C65A9DD32143007C00F6DA3C /* SortType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65A9DD22143007C00F6DA3C /* SortType.swift */; };
 		C67C0066213A666300B19A63 /* FilterableListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67C0065213A666300B19A63 /* FilterableListViewController.swift */; };
 		C680284F211B194100C19981 /* UnreadPostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C680284E211B194100C19981 /* UnreadPostTableViewCell.swift */; };
 		C6802851211B1A4400C19981 /* ReadPostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6802850211B1A4400C19981 /* ReadPostTableViewCell.swift */; };
@@ -34,7 +35,6 @@
 		C6DC5CC020FA1BEB008E9CC8 /* RealmService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DC5CBF20FA1BEB008E9CC8 /* RealmService.swift */; };
 		C6DC5CC220FA2EBD008E9CC8 /* FilterableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DC5CC120FA2EBD008E9CC8 /* FilterableTableViewCell.swift */; };
 		C6DC5CC520FA2EFA008E9CC8 /* Filterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DC5CC420FA2EFA008E9CC8 /* Filterable.swift */; };
-		C6DC5CC720FA7812008E9CC8 /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DC5CC620FA7812008E9CC8 /* HistoryViewController.swift */; };
 		C6EE0B4B2113585000236A8D /* PostOptionsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6EE0B4A2113585000236A8D /* PostOptionsPresenter.swift */; };
 /* End PBXBuildFile section */
 
@@ -67,6 +67,7 @@
 		C63534DF20F907E90020BE22 /* PostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostTableViewCell.swift; sourceTree = "<group>"; };
 		C63534E120F916EA0020BE22 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		C63534E820F927DF0020BE22 /* Topic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Topic.swift; sourceTree = "<group>"; };
+		C65A9DD22143007C00F6DA3C /* SortType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortType.swift; sourceTree = "<group>"; };
 		C67C0065213A666300B19A63 /* FilterableListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterableListViewController.swift; sourceTree = "<group>"; };
 		C680284E211B194100C19981 /* UnreadPostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnreadPostTableViewCell.swift; sourceTree = "<group>"; };
 		C6802850211B1A4400C19981 /* ReadPostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadPostTableViewCell.swift; sourceTree = "<group>"; };
@@ -81,7 +82,6 @@
 		C6DC5CBF20FA1BEB008E9CC8 /* RealmService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmService.swift; sourceTree = "<group>"; };
 		C6DC5CC120FA2EBD008E9CC8 /* FilterableTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterableTableViewCell.swift; sourceTree = "<group>"; };
 		C6DC5CC420FA2EFA008E9CC8 /* Filterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Filterable.swift; sourceTree = "<group>"; };
-		C6DC5CC620FA7812008E9CC8 /* HistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
 		C6EE0B4A2113585000236A8D /* PostOptionsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostOptionsPresenter.swift; sourceTree = "<group>"; };
 		E0702BC100D72B6F00B56252 /* Pods-easyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-easyTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-easyTests/Pods-easyTests.release.xcconfig"; sourceTree = "<group>"; };
 		E0A78EF15F9F99083BDA7C73 /* Pods_easyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_easyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -178,7 +178,6 @@
 			isa = PBXGroup;
 			children = (
 				C63534D620F8F2990020BE22 /* RootTabViewController.swift */,
-				C6DC5CC620FA7812008E9CC8 /* HistoryViewController.swift */,
 				C68D62BA20F9594800D2B8DD /* Filter */,
 				C68D62B520F958FA00D2B8DD /* Posts */,
 			);
@@ -190,6 +189,7 @@
 			children = (
 				C6DC5CBA20F9E57F008E9CC8 /* Realm */,
 				C6DC5CB820F9E4DE008E9CC8 /* Resource.swift */,
+				C65A9DD22143007C00F6DA3C /* SortType.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -474,7 +474,6 @@
 				C67C0066213A666300B19A63 /* FilterableListViewController.swift in Sources */,
 				C6DC5CB920F9E4DE008E9CC8 /* Resource.swift in Sources */,
 				C68D62BE20F9683900D2B8DD /* DefaultsKeys.swift in Sources */,
-				C6DC5CC720FA7812008E9CC8 /* HistoryViewController.swift in Sources */,
 				C680284F211B194100C19981 /* UnreadPostTableViewCell.swift in Sources */,
 				C63534E920F927DF0020BE22 /* Topic.swift in Sources */,
 				C63534D720F8F2990020BE22 /* RootTabViewController.swift in Sources */,
@@ -490,6 +489,7 @@
 				C6A17C432139C4D200F51945 /* Debouncer.swift in Sources */,
 				C68D62B920F9594200D2B8DD /* FilterListViewController.swift in Sources */,
 				C6802851211B1A4400C19981 /* ReadPostTableViewCell.swift in Sources */,
+				C65A9DD32143007C00F6DA3C /* SortType.swift in Sources */,
 				C6EE0B4B2113585000236A8D /* PostOptionsPresenter.swift in Sources */,
 				C63534B720F8F0DC0020BE22 /* AppDelegate.swift in Sources */,
 				C6DC5CBE20FA0D0A008E9CC8 /* Constants.swift in Sources */,

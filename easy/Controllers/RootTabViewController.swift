@@ -14,12 +14,6 @@ class RootTabViewController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-		let historyTab: HistoryViewController = {
-			let controller = HistoryViewController()
-			controller.tabBarItem = UITabBarItem(title: "History", image: nil, selectedImage: nil)
-			return controller
-		}()
-
 		let postsTab: PostListViewController = {
 			let controller = PostListViewController()
 			controller.tabBarItem = UITabBarItem(title: "Posts", image: nil, selectedImage: nil)
@@ -32,8 +26,7 @@ class RootTabViewController: UITabBarController {
 			return controller
 		}()
 
-		viewControllers = [historyTab, postsTab, filterTab]
-		selectedIndex = 1
+		viewControllers = [postsTab, filterTab]
 		tabBar.barTintColor = Constants.Colors.DARK
 		tabBar.tintColor = Constants.Colors.Text.TITLE
     }

@@ -18,9 +18,8 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 	private var posts: Results<Post> = Post.filtered.sorted(byKeyPath: "clapsPerDay", ascending: false)
 	private var notificationToken: NotificationToken?
 	var onPresentRequest: ((UIViewController) -> Void)?
-	private let table: UITableView
 
-	private let searchField: UITextField
+	private let viewController: PostListViewController
 	private var searchQuery: String?
 	private lazy var searchService = MediumService()
 	private lazy var debouncedSearch: Debouncer = Debouncer(delay: 0.4) {
@@ -37,86 +36,18 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 	}
 
 	private var hasClearColorChanged: Bool = false
+	private let listModes: [ListMode] = [.unread, .read]
+	private var selectedListModeIndex: Int = 0
+	var sortType: ListSortType = ListSortType.byClapCountPerDayDescending
 
 	deinit {
 		notificationToken?.invalidate()
 		preconditionFailure("main view controller should never deinit")
 	}
 
-	init(
-		with table: UITableView,
-		searchField: UITextField) {
-		self.table = table
-		self.searchField = searchField
+	init(controller: PostListViewController) {
+		self.viewController = controller
 		super.init()
-
-		setupTable()
-		searchField.delegate = self
-		searchField.addTarget(self, action: #selector(searchChanged(sender:)), for: .editingChanged)
-
-		autoFetchPosts()
-	}
-
-	private func setupTable() {
-		table.register(UnreadPostTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
-		table.register(ReadPostTableViewCell.self, forCellReuseIdentifier: readIdentifier)
-		table.dataSource = self
-		table.delegate = self
-
-		let service = MediumService()
-
-		let header = table.es.addPullToRefresh { [weak self] in
-			guard let strongSelf = self else {
-				return
-			}
-			let topics = Topic.included
-			let tags = Tag.included
-			if topics.count > 0 {
-				strongSelf.fetchTopics(topics, using: service)
-			}
-			if tags.count > 0 {
-				strongSelf.fetchTags(tags, using: service)
-			}
-			if topics.count == 0 && tags.count == 0 {
-				strongSelf.fetchHome(using: service)
-			}
-		}
-
-		service.onAllCompletion = { [weak self] in
-			Defaults[.lastRefreshDate] = Date().timeIntervalSince1970
-			DispatchQueue.main.async {
-				self?.table.es.stopPullToRefresh()
-			}
-		}
-		service.onStart = { (resource, totalRequestCount, completedRequestCount) in
-			guard let animator = header.animator as? ESRefreshHeaderAnimator else {
-				return
-			}
-
-			let loadingName: String = {
-				switch resource {
-				case .posts:
-					return "Home Feed"
-				case .tag(let name):
-					return name
-				case .topic(let topicId):
-					let realm = try? Realm()
-					guard let name = realm?.object(ofType: Topic.self, forPrimaryKey: topicId)?.name else {
-						return "Topics"
-					}
-					return name
-				case .search(let query):
-					return query
-				}
-			}()
-			animator.loadingDescription = "Loading \(loadingName) (\(completedRequestCount)/\(totalRequestCount))"
-			let newState: ESRefreshViewState = animator.state == .refreshing ? .autoRefreshing : .refreshing
-			DispatchQueue.main.async {
-				animator.refresh(view: header, stateDidChange: newState)
-			}
-			print((header.animator as? ESRefreshHeaderAnimator)?.loadingDescription)
-		}
-
 	}
 
 	private func tintClearIfNeeded(sender: UITextField) {
@@ -145,7 +76,14 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 		searchService.cancelAllRequests()
 		searchQuery = query
 		debouncedSearch.call()
-		setupPosts()
+		if let query = query,
+			query.count > 0 {
+			viewController.setFilterButtonsHidden(true)
+			setupPosts(sortType: ListSortType.search(query))
+		} else {
+			viewController.setFilterButtonsHidden(false)
+			setupPosts(sortType: sortType)
+		}
 	}
 
 	private func fetchTopics(_ topics: Results<Topic>, using service: MediumService) {
@@ -185,39 +123,142 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 		}
 	}
 
-	func setupPosts() {
-		let posts: Results<Post>
-		if let query = searchQuery?.lowercased(),
-			query.count > 0 {
-			let predicate: NSPredicate = {
-
-				var andPredicates: [NSPredicate] = []
-				for word in query.split(separator: " ") {
-					andPredicates.append(NSPredicate(format: "queryString CONTAINS %@", String(word)))
-				}
-				let orPredicates: [NSPredicate] = [
-					NSPredicate(format: "queryString BEGINSWITH %@", query),
-					NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-				]
-				return NSCompoundPredicate(orPredicateWithSubpredicates: orPredicates)
-			}()
-			posts = Post.all.filter(predicate)
-		} else {
-			posts = Post.filtered
-		}
-		self.posts = posts.sorted(byKeyPath: "clapsPerDay", ascending: false)
-		table.reloadData()
-//		print("displaying \(posts.count) of \(Post.all.count) posts")
-		notificationToken = self.posts.observe({ [weak self] changes in
-			self?.table.applyChanges(changes: changes, section: 0, additionalUpdates: nil)
-		})
-	}
-
-	private func autoFetchPosts() {
+	private func autoFetchPosts(table: UITableView) {
 		guard Defaults[.lastRefreshDate] < Date().timeIntervalSince1970 - 3600 else {
 			return
 		}
 		table.es.startPullToRefresh()
+	}
+
+	// MARK: Inputs
+	func setupPosts(sortType: ListSortType) {
+		self.posts = Post.all.filter(sortType.filter).sorted(by: sortType.sortDescriptors)
+		self.viewController.table.reloadData()
+		notificationToken = self.posts.observe({ [weak self] changes in
+			self?.viewController.table.applyChanges(changes: changes, section: 0, additionalUpdates: nil)
+		})
+	}
+
+	func setupSearch(field: UITextField) {
+		field.delegate = self
+		field.addTarget(self, action: #selector(searchChanged(sender:)), for: .editingChanged)
+	}
+
+	func setupTable(_ table: UITableView) {
+		table.register(UnreadPostTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+		table.register(ReadPostTableViewCell.self, forCellReuseIdentifier: readIdentifier)
+		table.dataSource = self
+		table.delegate = self
+
+		let service = MediumService()
+
+		let header = table.es.addPullToRefresh { [weak self] in
+			guard let strongSelf = self else {
+				return
+			}
+			let topics = Topic.included
+			let tags = Tag.included
+			if topics.count > 0 {
+				strongSelf.fetchTopics(topics, using: service)
+			}
+			if tags.count > 0 {
+				strongSelf.fetchTags(tags, using: service)
+			}
+			if topics.count == 0 && tags.count == 0 {
+				strongSelf.fetchHome(using: service)
+			}
+		}
+
+		service.onAllCompletion = { [weak self] in
+			Defaults[.lastRefreshDate] = Date().timeIntervalSince1970
+			DispatchQueue.main.async {
+				table.es.stopPullToRefresh()
+			}
+		}
+		service.onStart = { (resource, totalRequestCount, completedRequestCount) in
+			guard let animator = header.animator as? ESRefreshHeaderAnimator else {
+				return
+			}
+
+			let loadingName: String = {
+				switch resource {
+				case .posts:
+					return "Home Feed"
+				case .tag(let name):
+					return name
+				case .topic(let topicId):
+					let realm = try? Realm()
+					guard let name = realm?.object(ofType: Topic.self, forPrimaryKey: topicId)?.name else {
+						return "Topics"
+					}
+					return name
+				case .search(let query):
+					return query
+				}
+			}()
+			animator.loadingDescription = "Loading \(loadingName) (\(completedRequestCount)/\(totalRequestCount))"
+			let newState: ESRefreshViewState = animator.state == .refreshing ? .autoRefreshing : .refreshing
+			DispatchQueue.main.async {
+				animator.refresh(view: header, stateDidChange: newState)
+			}
+			print((header.animator as? ESRefreshHeaderAnimator)?.loadingDescription)
+		}
+
+		autoFetchPosts(table: table)
+	}
+
+	func setupListSwitcher(_ switcher: UISegmentedControl) {
+		for (index, segment) in listModes.enumerated() {
+			switcher.insertSegment(withTitle: segment.title, at: index, animated: false)
+		}
+		switcher.selectedSegmentIndex = selectedListModeIndex
+		switcher.addTarget(self, action: #selector(listSwitch(sender:)), for: .valueChanged)
+	}
+
+	func setupSortButton(_ button: UIBarButtonItem) {
+		guard let listMode = listModes[safe: selectedListModeIndex] else {
+			assertionFailure("\(selectedListModeIndex) out of bounds")
+			return
+		}
+		button.title = listMode.sortTypes.first?.buttonTitle
+		button.target = self
+		button.action = #selector(sortByAction(sender:))
+	}
+
+	// MARK: Selectors
+	@objc func sortByAction(sender: UIBarButtonItem) {
+		guard let listMode = listModes[safe: selectedListModeIndex] else {
+			assertionFailure("\(selectedListModeIndex) out of bounds")
+			return
+		}
+		let controller = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+		for type in listMode.sortTypes {
+			controller.addAction(UIAlertAction(title: type.buttonTitle, style: .default, handler: { [unowned self] _ in
+				sender.title = type.buttonTitle
+				self.sortType = type
+				self.setupPosts(sortType: type)
+			}))
+		}
+		controller.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+			controller.dismiss(animated: true, completion: nil)
+		}))
+		controller.isModalInPopover = true
+		controller.popoverPresentationController?.barButtonItem = sender
+		viewController.present(controller, animated: true, completion: nil)
+	}
+
+	@objc func listSwitch(sender: UISegmentedControl) {
+		selectedListModeIndex = sender.selectedSegmentIndex
+		// TODO: consider previously selected type for mode
+		guard let listMode = listModes[safe: selectedListModeIndex],
+			let sortType = listMode.sortTypes.first else {
+			assertionFailure("out of bounds")
+			return
+		}
+		self.sortType = sortType
+		setupPosts(sortType: sortType)
+		viewController.sortButton.title = sortType.buttonTitle
 	}
 }
 
@@ -262,7 +303,7 @@ extension PostListLogicController: UITableViewDataSource {
 
 extension PostListLogicController: UITableViewDelegate {
 	func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-		searchField.resignFirstResponder()
+		viewController.resignFirstResponder()
 	}
 
 	func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {

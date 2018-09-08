@@ -10,8 +10,8 @@ import UIKit
 
 class FilterRootViewController: UINavigationController {
 
-	private let postListInputs: PostListLogicController?
-	init(postListInputs: PostListLogicController?) {
+	private let postListInputs: PostListLogicController
+	init(postListInputs: PostListLogicController) {
 		self.postListInputs = postListInputs
 		super.init(nibName: nil, bundle: nil)
 	}

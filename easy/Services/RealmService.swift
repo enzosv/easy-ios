@@ -32,9 +32,6 @@ class RealmService {
 		if !Defaults.hasKey(.isPremiumIncluded) {
 			Defaults[.isPremiumIncluded] = true
 		}
-		if !Defaults.hasKey(.historySortType) {
-			Defaults[.historySortType] = HistorySortType.byDateReadDescending.rawValue
-		}
 	}
 
 	func savePosts(_ posts: [Post]) {

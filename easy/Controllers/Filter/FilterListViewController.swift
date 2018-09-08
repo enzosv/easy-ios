@@ -77,8 +77,8 @@ class FilterListViewController: UIViewController {
 		return button
 	}()
 
-	private let postListInputs: PostListLogicController?
-	init(postListInputs: PostListLogicController?) {
+	private let postListInputs: PostListLogicController
+	init(postListInputs: PostListLogicController) {
 		self.postListInputs = postListInputs
 		super.init(nibName: nil, bundle: nil)
 		title = "Filters"
@@ -172,13 +172,13 @@ class FilterListViewController: UIViewController {
 	@objc private func premiumAction(sender: UISwitch) {
 		let newValue = !Defaults[.isPremiumIncluded]
 		Defaults[.isPremiumIncluded] = newValue
-		postListInputs?.setupPosts()
+		postListInputs.setupPosts(sortType: postListInputs.sortType)
 	}
 
 	@objc private func ignoreAction(sender: UISwitch) {
 		let newValue = !Defaults[.isShowingIgnored]
 		Defaults[.isShowingIgnored] = newValue
-		postListInputs?.setupPosts()
+		postListInputs.setupPosts(sortType: postListInputs.sortType)
 	}
 
 	@objc private func topicAction(sender: UIButton) {

@@ -7,14 +7,23 @@
 //
 
 import UIKit
-import RealmSwift
 
 class PostListViewController: UIViewController {
 
-	private let table: UITableView = {
+	private let navBar: UINavigationBar = {
+		let firstItem = UINavigationItem(title: "Posts")
+		let bar = UINavigationBar(frame: .zero)
+		bar.pushItem(firstItem, animated: false)
+		bar.barTintColor = Constants.Colors.DARK
+		bar.titleTextAttributes = [.foregroundColor: Constants.Colors.Text.TITLE]
+		bar.isTranslucent = false
+		return bar
+	}()
+
+	let table: UITableView = {
 		let table = UITableView()
 		table.tableFooterView = UIView()
-		table.backgroundColor = .black
+		table.backgroundColor = Constants.Colors.DARK
 		table.separatorColor = Constants.Colors.DARK
 		table.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
 		return table
@@ -23,6 +32,7 @@ class PostListViewController: UIViewController {
 	private let searchFieldContainer: UIView = {
 		let view = UIView()
 		view.backgroundColor = Constants.Colors.DARK
+		view.clipsToBounds = true
 		return view
 	}()
 
@@ -43,10 +53,24 @@ class PostListViewController: UIViewController {
 		return field
 	}()
 
-	let logicController: PostListLogicController
+	private let listSwitcher: UISegmentedControl = {
+		let segment = UISegmentedControl()
+		segment.backgroundColor = .black
+		segment.tintColor = Constants.Colors.Text.SUBTITLE
+		return segment
+	}()
+
+	let sortButton: UIBarButtonItem = {
+		let button = UIBarButtonItem()
+		button.style = .plain
+		button.tintColor = Constants.Colors.Text.TITLE
+		return button
+	}()
+
+	lazy var logicController: PostListLogicController
+		= PostListLogicController(controller: self)
 
 	override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-		logicController = PostListLogicController(with: table, searchField: searchField)
 		super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
 		logicController.onPresentRequest = { [unowned self] controller in
 			self.present(controller, animated: true, completion: nil)
@@ -59,7 +83,11 @@ class PostListViewController: UIViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		logicController.setupPosts()
+		logicController.setupPosts(sortType: .byClapCountPerDayDescending)
+		logicController.setupTable(table)
+		logicController.setupSearch(field: searchField)
+		logicController.setupListSwitcher(listSwitcher)
+		logicController.setupSortButton(sortButton)
 		setup()
 	}
 
@@ -68,26 +96,63 @@ class PostListViewController: UIViewController {
 	}
 
 	private func setup() {
+		searchFieldContainer.addSubview(listSwitcher)
 		searchFieldContainer.addSubview(searchField)
-
-		view.backgroundColor = .black
-		view.addSubview(searchFieldContainer)
+		table.tableHeaderView = searchFieldContainer
+		view.backgroundColor = Constants.Colors.DARK
+		view.addSubview(navBar)
 		view.addSubview(table)
+
+		navBar.topItem?.rightBarButtonItem = sortButton
+
 	}
 
 	private func remakeLayout() {
-		searchField.snp.remakeConstraints { (make) in
-			make.top.equalToSuperview().inset(view.safeAreaInsets.top+4)
-			make.bottom.equalToSuperview().inset(8)
-			make.left.right.equalToSuperview().inset(8)
-			make.height.equalTo(44)
+		navBar.snp.remakeConstraints { make in
+			make.top.left.right.equalTo(view.safeAreaInsets)
 		}
+
 		searchFieldContainer.snp.remakeConstraints { make in
-			make.top.left.right.equalToSuperview()
+			make.top.left.right.width.equalToSuperview()
+		}
+
+		searchField.snp.remakeConstraints { (make) in
+			make.top.equalToSuperview()
+			make.left.right.equalToSuperview().inset(8)
+		}
+
+		listSwitcher.snp.remakeConstraints { make in
+			make.top.equalTo(searchField.snp.bottom).offset(8).priority(.medium)
+			make.centerX.equalToSuperview()
+			make.bottom.equalToSuperview().inset(8)
 		}
 		table.snp.remakeConstraints { (make) in
-			make.top.equalTo(searchFieldContainer.snp.bottom)
+			make.top.equalTo(navBar.snp.bottom)
 			make.left.right.bottom.equalToSuperview().inset(view.safeAreaInsets)
 		}
 	}
+
+	func setFilterButtonsHidden(_ hidden: Bool) {
+		let tableHeaderHeight: CGFloat
+		let alpha: CGFloat
+		if hidden {
+			navBar.topItem?.setRightBarButton(nil, animated: true)
+			tableHeaderHeight = searchField.frame.origin.y + searchField.frame.height + 8
+			alpha = 0
+		} else {
+			navBar.topItem?.setRightBarButton(sortButton, animated: true)
+			tableHeaderHeight = searchField.frame.origin.y + searchField.frame.height + 8 + listSwitcher.frame.height + 8
+			alpha = 1
+		}
+		searchFieldContainer.snp.remakeConstraints { make in
+			make.top.left.right.width.equalToSuperview()
+			make.height.equalTo(tableHeaderHeight)
+		}
+		// REVIEW: Height doesn't animate to appear
+		UIView.animate(withDuration: 0.25) {
+			self.searchFieldContainer.superview?.layoutIfNeeded()
+			self.listSwitcher.alpha = alpha
+		}
+	}
+
 }

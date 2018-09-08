@@ -12,5 +12,4 @@ extension DefaultsKeys {
 	static let isPremiumIncluded = DefaultsKey<Bool>("isPremiumIncluded")
 	static let isShowingIgnored = DefaultsKey<Bool>("isShowingIgnored")
 	static let lastRefreshDate = DefaultsKey<Double>("lastRefreshDate")
-	static let historySortType = DefaultsKey<Int>("historySortType")
 }

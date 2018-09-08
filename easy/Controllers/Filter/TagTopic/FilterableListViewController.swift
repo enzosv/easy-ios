@@ -114,7 +114,7 @@ class FilterableListViewController: UIViewController {
 		return table
 	}()
 
-	private let inputs: PostListLogicController?
+	private let inputs: PostListLogicController
 	private lazy var mediumService = MediumService()
 	private let filterMode: FilterMode
 	private var sections: DictionaryArray
@@ -125,7 +125,7 @@ class FilterableListViewController: UIViewController {
 		print("DEINITIALIZED: \(self)")
 	}
 
-	init(filterMode: FilterMode, inputs: PostListLogicController?) {
+	init(filterMode: FilterMode, inputs: PostListLogicController) {
 		self.filterMode = filterMode
 		self.sections = filterMode.sections
 		self.inputs = inputs
@@ -227,7 +227,8 @@ extension FilterableListViewController: UITableViewDelegate {
 			included = realm.object(ofType: Tag.self, forPrimaryKey: filterRow.rowId)?.toggleIsIncluded() ?? false
 			resource = .tag(filterRow.rowId)
 		}
-		inputs?.setupPosts()
+		inputs.setupPosts(sortType: inputs.sortType)
+
 		if included {
 			mediumService.requestResource(resource)
 				.done { posts in
