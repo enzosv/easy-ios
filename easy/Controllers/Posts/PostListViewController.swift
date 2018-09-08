@@ -186,19 +186,9 @@ class PostListViewController: UIViewController {
 		guard let reviewView = reviewView else {
 			return
 		}
-		reviewView.snp.remakeConstraints { make in
-			make.top.equalTo(view.snp.bottom)
-				.offset(view.safeAreaInsets.bottom)
-			make.centerX.equalToSuperview()
-			make.width.equalToSuperview().inset(32)
-		}
-		UIView.animate(withDuration: 0.3, animations: {
-			reviewView.superview?.layoutIfNeeded()
-			reviewView.alpha = 0
-		}, completion: { _ in
-			reviewView.removeFromSuperview()
+		reviewView.remove(animated: true) { _ in
 			self.reviewView = nil
-		})
+		}
 	}
 
 }

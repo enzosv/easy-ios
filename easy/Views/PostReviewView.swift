@@ -194,4 +194,30 @@ class PostReviewView: UIView {
 		}
 	}
 
+	func remove(animated: Bool, completion: ((Bool) -> Void)?) {
+		guard let superview = superview else {
+			completion?(true)
+			return
+		}
+		guard animated else {
+			removeFromSuperview()
+			completion?(true)
+			return
+		}
+		snp.remakeConstraints { make in
+			make.top.equalTo(superview.snp.bottom)
+				.offset(superview.safeAreaInsets.bottom)
+			make.centerX.equalToSuperview()
+			make.width.equalToSuperview().inset(32)
+		}
+		UIView.animate(withDuration: 0.3, animations: {
+			superview.layoutIfNeeded()
+			self.alpha = 0
+		}, completion: { completed in
+			self.removeFromSuperview()
+			completion?(completed)
+		})
+
+	}
+
 }
