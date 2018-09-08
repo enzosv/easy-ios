@@ -124,12 +124,13 @@ class MediumService {
 				print(error.localizedDescription)
 		}
 
-		onStart?(request.resource, requests.count+completedRequestCount, completedRequestCount)
+		
 
 		currentDataRequest = Alamofire.request(urlString, headers: ["accept": "application/json"])
 		assert(currentDataRequest != nil, "\(urlString) is invalid")
 
 		print("requesting: \(urlString)")
+		onStart?(request.resource, requests.count+completedRequestCount, completedRequestCount+1)
 		currentDataRequest?.responseString { response in
 			//not using weak self to keep service alive
 			switch response.result {
