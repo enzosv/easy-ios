@@ -317,7 +317,7 @@ extension PostListLogicController: UITableViewDataSource {
 
 extension PostListLogicController: UITableViewDelegate {
 	func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-		viewController.resignFirstResponder()
+		viewController.searchField.resignFirstResponder()
 	}
 
 	func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {

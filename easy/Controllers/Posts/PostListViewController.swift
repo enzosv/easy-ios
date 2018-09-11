@@ -36,7 +36,7 @@ class PostListViewController: UIViewController {
 		return view
 	}()
 
-	private let searchField: UITextField = {
+	let searchField: UITextField = {
 		let field = UITextField()
 		field.borderStyle = .roundedRect
 		field.tintColor = Constants.Colors.Text.TITLE
