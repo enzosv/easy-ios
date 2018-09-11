@@ -134,6 +134,7 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 
 	// MARK: Inputs
 	func setupPosts(sortType: ListSortType) {
+		self.sortType = sortType
 		self.posts = sortType.posts
 		self.viewController.table.reloadData()
 
@@ -246,7 +247,6 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 		for type in listMode.sortTypes {
 			controller.addAction(UIAlertAction(title: type.buttonTitle, style: .default, handler: { [unowned self] _ in
 				sender.title = type.buttonTitle
-				self.sortType = type
 				self.setupPosts(sortType: type)
 			}))
 		}
@@ -266,7 +266,6 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 			assertionFailure("out of bounds")
 			return
 		}
-		self.sortType = sortType
 		setupPosts(sortType: sortType)
 		viewController.sortButton.title = sortType.buttonTitle
 	}
