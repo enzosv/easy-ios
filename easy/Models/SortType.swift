@@ -15,7 +15,7 @@ enum ListSortType {
 	case byClapCountPerDayDescending
 	case byClapCountDescending
 	case byDatePostedDescending
-	case search(String)
+	case search(String, ListMode)
 
 	var buttonTitle: String? {
 		switch self {
@@ -56,7 +56,7 @@ enum ListSortType {
 	}
 
 	private var filters: [NSPredicate] {
-		if case .search(let query) = self {
+		if case .search(let query, _) = self {
 			let words = query.lowercased().components(separatedBy: " ")
 			let orPredicates = NSCompoundPredicate(orPredicateWithSubpredicates:
 				words.map {NSPredicate(format: "queryString CONTAINS %@", $0)})
