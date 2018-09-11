@@ -92,7 +92,19 @@ enum ListSortType {
 	}
 
 	var posts: [Results<Post>] {
-		let all = Post.all
+		let all: Results<Post> = {
+			switch self {
+			case .search(_, let listMode):
+				switch listMode {
+				case .read:
+					return Post.all.filter("dateRead != nil")
+				case .unread:
+					return Post.all.filter("dateRead == nil")
+				}
+			default:
+				return Post.all
+			}
+		}()
 		let sorts = sortDescriptors
 		return filters.map {all.filter($0).sorted(by: sorts)}
 	}
