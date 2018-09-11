@@ -81,7 +81,7 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 		if let query = query,
 			query.count > 0 {
 			viewController.setFilterButtonsHidden(true)
-			setupPosts(sortType: ListSortType.search(query))
+			setupPosts(sortType: ListSortType.search(query, listModes[safe: selectedListModeIndex] ?? .unread))
 		} else {
 			viewController.setFilterButtonsHidden(false)
 			setupPosts(sortType: sortType)
@@ -261,12 +261,17 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 	@objc func listSwitch(sender: UISegmentedControl) {
 		selectedListModeIndex = sender.selectedSegmentIndex
 		// TODO: consider previously selected type for mode
-		guard let listMode = listModes[safe: selectedListModeIndex],
-			let sortType = listMode.sortTypes.first else {
+		guard let listMode = listModes[safe: selectedListModeIndex] else {
 			assertionFailure("out of bounds")
 			return
 		}
-		setupPosts(sortType: sortType)
+		if case .search(let query, _) = self.sortType {
+			setupPosts(sortType: .search(query, listMode))
+		} else if let sortType = listMode.sortTypes.first {
+			setupPosts(sortType: sortType)
+		} else {
+			assertionFailure("out of bounds")
+		}
 		viewController.sortButton.title = sortType.buttonTitle
 	}
 }
