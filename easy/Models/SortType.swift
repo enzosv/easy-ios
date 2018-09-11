@@ -49,6 +49,7 @@ enum ListSortType {
 			return [SortDescriptor(keyPath: "upvoteCount", ascending: false),
 					SortDescriptor(keyPath: "dateRead", ascending: false)]
 		case .search:
+			//TODO: sort by previous sort
 			return [SortDescriptor(keyPath: "upvoteCount", ascending: false),
 					SortDescriptor(keyPath: "dateRead", ascending: false),
 					SortDescriptor(keyPath: "clapsPerDay", ascending: false)]
