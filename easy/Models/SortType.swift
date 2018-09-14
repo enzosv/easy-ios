@@ -51,7 +51,20 @@ enum ListSortType {
 		case .search(_, _, let sorts):
 			return sorts
 		}
+	}
+
+	private var defaultFilters: NSPredicate {
+		var andPredicates = [NSPredicate]()
+		if !Defaults[.isPremiumIncluded] {
+			andPredicates.append(NSPredicate(format: "isSubscriptionLocked == false"))
 		}
+		if !Defaults[.isShowingIgnored] {
+			andPredicates.append(NSPredicate(format: "isIgnored == false"))
+		}
+		if Topic.included.count > 0 || Tag.included.count > 0 {
+			andPredicates.append(NSPredicate(format: "ANY topics.isIncluded == true OR ANY tags.isIncluded == true"))
+		}
+		return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 	}
 
 	private var filters: [NSPredicate] {
