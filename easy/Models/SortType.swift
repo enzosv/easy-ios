@@ -15,7 +15,7 @@ enum ListSortType {
 	case byClapCountPerDayDescending
 	case byClapCountDescending
 	case byDatePostedDescending
-	case search(String, ListMode)
+	case search(String, NSPredicate, [SortDescriptor])
 
 	var buttonTitle: String? {
 		switch self {
@@ -48,16 +48,14 @@ enum ListSortType {
 		case .byUpvoteCountDescending:
 			return [SortDescriptor(keyPath: "upvoteCount", ascending: false),
 					SortDescriptor(keyPath: "dateRead", ascending: false)]
-		case .search:
-			//TODO: sort by previous sort
-			return [SortDescriptor(keyPath: "upvoteCount", ascending: false),
-					SortDescriptor(keyPath: "dateRead", ascending: false),
-					SortDescriptor(keyPath: "clapsPerDay", ascending: false)]
+		case .search(_, _, let sorts):
+			return sorts
+		}
 		}
 	}
 
 	private var filters: [NSPredicate] {
-		if case .search(let query, _) = self {
+		if case .search(let query, _, _) = self {
 			let words = query.lowercased().components(separatedBy: " ")
 			let orPredicates = NSCompoundPredicate(orPredicateWithSubpredicates:
 				words.map {NSPredicate(format: "queryString CONTAINS %@", $0)})
@@ -95,13 +93,8 @@ enum ListSortType {
 	var posts: [Results<Post>] {
 		let all: Results<Post> = {
 			switch self {
-			case .search(_, let listMode):
-				switch listMode {
-				case .read:
-					return Post.all.filter("dateRead != nil")
-				case .unread:
-					return Post.all.filter("dateRead == nil")
-				}
+			case .search(_, let filter, _):
+				return Post.all.filter(filter)
 			default:
 				return Post.all
 			}
