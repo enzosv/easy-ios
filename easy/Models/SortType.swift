@@ -80,27 +80,16 @@ enum ListSortType {
 					searchPredicate]
 		}
 
-		var andPredicates = [NSPredicate]()
-		if !Defaults[.isPremiumIncluded] {
-			andPredicates.append(NSPredicate(format: "isSubscriptionLocked == false"))
-		}
-		if !Defaults[.isShowingIgnored] {
-			andPredicates.append(NSPredicate(format: "isIgnored == false"))
-		}
-		if Topic.included.count > 0 || Tag.included.count > 0 {
-			andPredicates.append(NSPredicate(format: "ANY topics.isIncluded == true OR ANY tags.isIncluded == true"))
-		}
 		switch self {
 		case .byClapCountPerDayDescending,
 			 .byClapCountDescending,
 			 .byDatePostedDescending:
-			andPredicates.append(NSPredicate(format: "dateRead == nil"))
+			return [NSPredicate(format: "dateRead == nil")]
 		case .byDateReadDescending, .byUpvoteCountDescending:
-			andPredicates.append(NSPredicate(format: "dateRead != nil"))
+			return [NSPredicate(format: "dateRead != nil")]
 		case .search:
-			assertionFailure("handle this before creating andpredicates")
+			preconditionFailure("handle this before creating andpredicates")
 		}
-		return [NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)]
 	}
 
 	var posts: [Results<Post>] {
@@ -109,7 +98,7 @@ enum ListSortType {
 			case .search(_, let filter, _):
 				return Post.all.filter(filter)
 			default:
-				return Post.all
+				return Post.all.filter(defaultFilters)
 			}
 		}()
 		let sorts = sortDescriptors
