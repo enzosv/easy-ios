@@ -13,9 +13,17 @@ class RealmService {
 
 	static func performMigration() {
 		let config = Realm.Configuration(
-			schemaVersion: 4,
-			migrationBlock: { _, _ in
-
+			schemaVersion: 5,
+			migrationBlock: { migration, oldSchemaVersion in
+				if oldSchemaVersion < 5 {
+					migration.enumerateObjects(ofType: Post.className()) { oldObject, newObject in
+						guard let updatedAt = oldObject?["updatedAt"] as? Double else {
+							assertionFailure("no updated at")
+							return
+						}
+						newObject?["lastUpdateCheck"] = updatedAt/1000
+					}
+				}
 		})
 
 		Realm.Configuration.defaultConfiguration = config

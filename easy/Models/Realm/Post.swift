@@ -23,6 +23,8 @@ class Post: Object {
 	@objc dynamic var title: String = ""
 	@objc dynamic var author: String?
 
+	@objc dynamic var lastUpdateCheck: Double = Double.nan
+
 	@objc dynamic var recommendsPerDay: Float = 0
 	@objc dynamic var clapsPerDay: Float = 0
 	@objc dynamic var queryString: String = ""
