@@ -150,6 +150,17 @@ class Post: Object {
 		}
 	}
 
+	func updateIfNeeded(using service: MediumService) {
+		guard lastUpdateCheck+86400 < Date().timeIntervalSince1970 else {
+			return
+		}
+
+		//Uses search instead of fetching entire post content
+		service.requestResource(.search(postId))
+			.done { posts in
+				RealmService().savePosts(posts)
+			}.catch { _ in
+				//TODO: handle error
 		}
 	}
 

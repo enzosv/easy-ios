@@ -286,6 +286,7 @@ extension PostListLogicController: UITableViewDataSource {
 			assertionFailure("\(indexPath.row) out of bounds. \(posts.count) total")
 			return UITableViewCell()
 		}
+		post.updateIfNeeded(using: searchService)
 		if post.isRead {
 			guard let cell = tableView.dequeueReusableCell(withIdentifier: readIdentifier) as? ReadPostTableViewCell else {
 				assertionFailure("register PostTableViewCell with reuseIdentifier: \(readIdentifier) first")
