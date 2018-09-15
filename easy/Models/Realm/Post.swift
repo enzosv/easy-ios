@@ -21,6 +21,7 @@ class Post: Object {
 	@objc dynamic var recommends: Int = 0
 	@objc dynamic var totalClapCount: Int = 0
 	@objc dynamic var title: String = ""
+	@objc dynamic var author: String?
 
 	@objc dynamic var recommendsPerDay: Float = 0
 	@objc dynamic var clapsPerDay: Float = 0
@@ -29,7 +30,6 @@ class Post: Object {
 	@objc dynamic var dateRead: Date?
 	@objc dynamic var isIgnored: Bool = false
 	@objc dynamic var upvoteCount: Int = 0
-	@objc dynamic var author: String?
 
 	let tags = List<Tag>()
 	let topics = List<Topic>()

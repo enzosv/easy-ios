@@ -154,19 +154,22 @@ class MediumService {
 		let json = JSON(parseJSON: jsonString)
 		guard
 			let payload = json["payload"].dictionary,
-			let references = payload["references"]?.dictionary,
-			let posts = references["Post"]?.dictionary,
-			let users = references["User"]?.dictionary
-			else {
+			let references = payload["references"]?.dictionary else {
 				//happens when search is empty
 				print("⚠️ invalid posts json: \(jsonString)")
 				return nil
 		}
+		guard let posts = references["Post"]?.dictionary else {
+			print("⚠️ empty posts json: \(jsonString)")
+			return []
+		}
+		let users = references["User"]?.dictionary
 		var pendingPosts = [Post]()
 		for (_, json) in posts {
 			let author: String? = {
 				guard let userId = json["creatorId"].string,
-					let user = users[userId]?.dictionary else {
+					let user = users?[userId]?.dictionary else {
+						print("⚠️ no user")
 						return nil
 				}
 				return user["name"]?.string
