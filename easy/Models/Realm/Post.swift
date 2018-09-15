@@ -118,7 +118,7 @@ class Post: Object {
 		return realm.objects(Post.self)
 	}
 
-	var reasonForShowing: String {
+	var reasonForShowing: String? {
 		let includedTopics = topics.filter("isIncluded == true")
 		if let name = includedTopics.filter("topicId != %@", Topic.POPULARID).first?.name {
 			return name
