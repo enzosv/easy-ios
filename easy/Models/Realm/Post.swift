@@ -51,6 +51,14 @@ class Post: Object {
 			else {
 				return nil
 		}
+		let existing = Post.existing(with: postId)
+		if (existing?.updatedAt ?? 0) >= updatedAt {
+			let realm = try? Realm()
+			try? realm?.write {
+				existing?.updateDates()
+			}
+			return nil
+		}
 		guard
 			let createdAt = json["createdAt"].double,
 			let firstPublishedAt = json["firstPublishedAt"].double,
@@ -92,18 +100,12 @@ class Post: Object {
 			return queryStrings.joined(separator: " ").lowercased()
 		}()
 
-		let secondsSinceFirstPublished = Date().timeIntervalSince1970-firstPublishedAt/1000
-		let daysSinceFirstPublished = Float(secondsSinceFirstPublished/86400)
-
-		post.clapsPerDay = Float(totalClapCount)/daysSinceFirstPublished
-		post.recommendsPerDay = Float(recommends)/daysSinceFirstPublished
+		post.updateDates()
 
 		//USER SET VALUES
-		if let existing = Post.existing(with: postId) {
-			post.isIgnored = existing.isIgnored
-			post.upvoteCount = existing.upvoteCount
-			post.dateRead = existing.dateRead
-		}
+		post.isIgnored = existing?.isIgnored ?? false
+		post.upvoteCount = existing?.upvoteCount ?? 0
+		post.dateRead = existing?.dateRead
 
 		return post
 	}
@@ -118,6 +120,15 @@ class Post: Object {
 			preconditionFailure("no realm")
 		}
 		return realm.objects(Post.self)
+	}
+
+	private func updateDates() {
+		let secondsSinceFirstPublished = Date().timeIntervalSince1970-firstPublishedAt/1000
+		let daysSinceFirstPublished = Float(secondsSinceFirstPublished/86400)
+
+		clapsPerDay = Float(totalClapCount)/daysSinceFirstPublished
+		recommendsPerDay = Float(recommends)/daysSinceFirstPublished
+		lastUpdateCheck = Date().timeIntervalSince1970
 	}
 
 	var reasonForShowing: String? {
