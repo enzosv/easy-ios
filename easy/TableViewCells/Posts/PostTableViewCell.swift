@@ -133,6 +133,7 @@ class PostTableViewCell: UITableViewCell {
 	}
 
 	func configure(with post: Post, onOptionsClick: ((Post) -> Void)?) {
+
 		let alpha: CGFloat = post.isIgnored ? 0.75 : 1
 		titleLabel.alpha = alpha
 		reasonLabel.alpha = alpha
@@ -140,7 +141,7 @@ class PostTableViewCell: UITableViewCell {
 		virtualsLabel.alpha = alpha
 
 		titleLabel.text = post.title
-		reasonLabel.text = post.reasonForShowing.uppercased()
+		reasonLabel.text = post.reasonForShowing?.uppercased()
 		dateLabel.text = {
 			let date = Date(timeIntervalSince1970: post.firstPublishedAt/1000)
 			return dateFormatter.string(from: date)
