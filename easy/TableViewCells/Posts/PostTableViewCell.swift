@@ -28,6 +28,8 @@ fileprivate extension UILabel {
 	}
 }
 
+typealias PostCallback = ((Post) -> Void)
+
 class PostTableViewCell: UITableViewCell {
 
 	private let titleLabel: UILabel =
@@ -132,8 +134,10 @@ class PostTableViewCell: UITableViewCell {
 		}
 	}
 
-	func configure(with post: Post, onOptionsClick: ((Post) -> Void)?) {
-
+	func configure(
+		with post: Post,
+		onToggleReadClick: PostCallback?,
+		onOptionsClick: PostCallback?) {
 		let alpha: CGFloat = post.isIgnored ? 0.75 : 1
 		titleLabel.alpha = alpha
 		reasonLabel.alpha = alpha
