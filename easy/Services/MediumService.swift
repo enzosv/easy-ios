@@ -79,19 +79,6 @@ class MediumService {
 			//TODO: consider prioritizing
 			return
 		}
-
-		//remove request from array after cancel/success/failure
-		request.promise
-			.ensure {
-				if let index = self.requests.index(where: {$0.resource.urlString == urlString}) {
-					self.requests.remove(at: index)
-				} else {
-					assertionFailure("\(urlString) not in stack")
-				}
-			}
-			.catch { error in
-				print(error.localizedDescription)
-		}
 		requests.append(request)
 		performRequest(request)
 	}
@@ -109,8 +96,16 @@ class MediumService {
 
 		//perform next request after success/failure
 		request.promise
-			.ensure {
-				//not using weak self to keep service alive
+			.catch { error in
+				print("❌ \(error.localizedDescription)")
+			}
+			.finally {
+				if let index = self.requests.index(where: {$0.resource.urlString == urlString}) {
+					print("removing request: \(urlString)")
+					self.requests.remove(at: index)
+				} else {
+					assertionFailure("\(urlString) not in stack")
+				}
 				self.completedRequestCount += 1
 				self.currentDataRequest = nil
 				DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + DELAY, execute: {
@@ -121,9 +116,6 @@ class MediumService {
 						self.onAllCompletion?()
 					}
 				})
-			}
-			.catch { error in
-				print(error.localizedDescription)
 		}
 
 		
@@ -149,6 +141,7 @@ class MediumService {
 				request.resolver.reject(error)
 			}
 		}
+
 	}
 
 	private func parsePostsFromSuccessfulResponse(_ response: String) -> [Post]? {
