@@ -73,6 +73,8 @@ class MediumService {
 		}
 		let contains = requests.contains { $0.resource.urlString == urlString}
 		guard !contains else {
+			print("⚠️ \(urlString) already in queue")
+			request.resolver.reject(PMKError.cancelled)
 			//already in queue
 			//TODO: consider prioritizing
 			return
