@@ -36,7 +36,7 @@ class PostListViewController: UIViewController {
 		return view
 	}()
 
-	private let searchField: UITextField = {
+	let searchField: UITextField = {
 		let field = UITextField()
 		field.borderStyle = .roundedRect
 		field.tintColor = Constants.Colors.Text.TITLE
@@ -133,26 +133,26 @@ class PostListViewController: UIViewController {
 	}
 
 	func setFilterButtonsHidden(_ hidden: Bool) {
-		let tableHeaderHeight: CGFloat
-		let alpha: CGFloat
+//		let tableHeaderHeight: CGFloat
+//		let alpha: CGFloat
 		if hidden {
 			navBar.topItem?.setRightBarButton(nil, animated: true)
-			tableHeaderHeight = searchField.frame.origin.y + searchField.frame.height + 8
-			alpha = 0
+//			tableHeaderHeight = searchField.frame.origin.y + searchField.frame.height + 8
+//			alpha = 0
 		} else {
 			navBar.topItem?.setRightBarButton(sortButton, animated: true)
-			tableHeaderHeight = searchField.frame.origin.y + searchField.frame.height + 8 + listSwitcher.frame.height + 8
-			alpha = 1
+//			tableHeaderHeight = searchField.frame.origin.y + searchField.frame.height + 8 + listSwitcher.frame.height + 8
+//			alpha = 1
 		}
-		searchFieldContainer.snp.remakeConstraints { make in
-			make.top.left.right.width.equalToSuperview()
-			make.height.equalTo(tableHeaderHeight)
-		}
-		// REVIEW: Height doesn't animate to appear
-		UIView.animate(withDuration: 0.25) {
-			self.searchFieldContainer.superview?.layoutIfNeeded()
-			self.listSwitcher.alpha = alpha
-		}
+//		searchFieldContainer.snp.remakeConstraints { make in
+//			make.top.left.right.width.equalToSuperview()
+//			make.height.equalTo(tableHeaderHeight)
+//		}
+//		// REVIEW: Height doesn't animate to appear
+//		UIView.animate(withDuration: 0.25) {
+//			self.searchFieldContainer.superview?.layoutIfNeeded()
+//			self.listSwitcher.alpha = alpha
+//		}
 	}
 
 }

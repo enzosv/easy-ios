@@ -15,7 +15,7 @@ enum ListSortType {
 	case byClapCountPerDayDescending
 	case byClapCountDescending
 	case byDatePostedDescending
-	case search(String)
+	case search(String, NSPredicate, [SortDescriptor])
 
 	var buttonTitle: String? {
 		switch self {
@@ -34,7 +34,7 @@ enum ListSortType {
 		}
 	}
 
-	private var sortDescriptors: [SortDescriptor] {
+	var sortDescriptors: [SortDescriptor] {
 		switch self {
 		case .byClapCountPerDayDescending:
 			return [SortDescriptor(keyPath: "clapsPerDay", ascending: false)]
@@ -48,15 +48,27 @@ enum ListSortType {
 		case .byUpvoteCountDescending:
 			return [SortDescriptor(keyPath: "upvoteCount", ascending: false),
 					SortDescriptor(keyPath: "dateRead", ascending: false)]
-		case .search:
-			return [SortDescriptor(keyPath: "upvoteCount", ascending: false),
-					SortDescriptor(keyPath: "dateRead", ascending: false),
-					SortDescriptor(keyPath: "clapsPerDay", ascending: false)]
+		case .search(_, _, let sorts):
+			return sorts
 		}
 	}
 
-	private var filters: [NSPredicate] {
-		if case .search(let query) = self {
+	private var defaultFilters: NSPredicate {
+		var andPredicates = [NSPredicate]()
+		if !Defaults[.isPremiumIncluded] {
+			andPredicates.append(NSPredicate(format: "isSubscriptionLocked == false"))
+		}
+		if !Defaults[.isShowingIgnored] {
+			andPredicates.append(NSPredicate(format: "isIgnored == false"))
+		}
+		if Topic.included.count > 0 || Tag.included.count > 0 {
+			andPredicates.append(NSPredicate(format: "ANY topics.isIncluded == true OR ANY tags.isIncluded == true"))
+		}
+		return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+	}
+
+	var filters: [NSPredicate] {
+		if case .search(let query, _, _) = self {
 			let words = query.lowercased().components(separatedBy: " ")
 			let orPredicates = NSCompoundPredicate(orPredicateWithSubpredicates:
 				words.map {NSPredicate(format: "queryString CONTAINS %@", $0)})
@@ -68,31 +80,27 @@ enum ListSortType {
 					searchPredicate]
 		}
 
-		var andPredicates = [NSPredicate]()
-		if !Defaults[.isPremiumIncluded] {
-			andPredicates.append(NSPredicate(format: "isSubscriptionLocked == false"))
-		}
-		if !Defaults[.isShowingIgnored] {
-			andPredicates.append(NSPredicate(format: "isIgnored == false"))
-		}
-		if Topic.included.count > 0 || Tag.included.count > 0 {
-			andPredicates.append(NSPredicate(format: "ANY topics.isIncluded == true OR ANY tags.isIncluded == true"))
-		}
 		switch self {
 		case .byClapCountPerDayDescending,
 			 .byClapCountDescending,
 			 .byDatePostedDescending:
-			andPredicates.append(NSPredicate(format: "dateRead == nil"))
+			return [NSPredicate(format: "dateRead == nil")]
 		case .byDateReadDescending, .byUpvoteCountDescending:
-			andPredicates.append(NSPredicate(format: "dateRead != nil"))
+			return [NSPredicate(format: "dateRead != nil")]
 		case .search:
-			assertionFailure("handle this before creating andpredicates")
+			preconditionFailure("handle this before creating andpredicates")
 		}
-		return [NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)]
 	}
 
 	var posts: [Results<Post>] {
-		let all = Post.all
+		let all: Results<Post> = {
+			switch self {
+			case .search(_, let filter, _):
+				return Post.all.filter(filter)
+			default:
+				return Post.all.filter(defaultFilters)
+			}
+		}()
 		let sorts = sortDescriptors
 		return filters.map {all.filter($0).sorted(by: sorts)}
 	}

@@ -38,6 +38,7 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 	private var hasClearColorChanged: Bool = false
 	private let listModes: [ListMode] = [.unread, .read]
 	private var selectedListModeIndex: Int = 0
+	private var selectedSortTypeIndex: Int = 0
 	var sortType: ListSortType = ListSortType.byClapCountPerDayDescending
 
 	deinit {
@@ -80,8 +81,14 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 		debouncedSearch.call()
 		if let query = query,
 			query.count > 0 {
+			guard let selectedSortType = listModes[safe: selectedListModeIndex]?
+				.sortTypes[safe: selectedSortTypeIndex],
+				let filter = selectedSortType.filters.first else {
+					assertionFailure("filter and sorts should exist")
+					return
+			}
 			viewController.setFilterButtonsHidden(true)
-			setupPosts(sortType: ListSortType.search(query))
+			setupPosts(sortType: ListSortType.search(query, filter, selectedSortType.sortDescriptors))
 		} else {
 			viewController.setFilterButtonsHidden(false)
 			setupPosts(sortType: sortType)
@@ -134,6 +141,7 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 
 	// MARK: Inputs
 	func setupPosts(sortType: ListSortType) {
+		self.sortType = sortType
 		self.posts = sortType.posts
 		self.viewController.table.reloadData()
 
@@ -243,10 +251,10 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 		}
 		let controller = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
-		for type in listMode.sortTypes {
+		for (index, type) in listMode.sortTypes.enumerated() {
 			controller.addAction(UIAlertAction(title: type.buttonTitle, style: .default, handler: { [unowned self] _ in
 				sender.title = type.buttonTitle
-				self.sortType = type
+				self.selectedSortTypeIndex = index
 				self.setupPosts(sortType: type)
 			}))
 		}
@@ -260,14 +268,19 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 
 	@objc func listSwitch(sender: UISegmentedControl) {
 		selectedListModeIndex = sender.selectedSegmentIndex
-		// TODO: consider previously selected type for mode
 		guard let listMode = listModes[safe: selectedListModeIndex],
 			let sortType = listMode.sortTypes.first else {
 			assertionFailure("out of bounds")
 			return
 		}
-		self.sortType = sortType
-		setupPosts(sortType: sortType)
+		if case .search(let query, _, _) = self.sortType,
+			let filter = sortType.filters.first {
+			setupPosts(sortType: .search(query, filter, sortType.sortDescriptors))
+		} else {
+			// TODO: consider previously selected type for mode
+			selectedSortTypeIndex = 0
+			setupPosts(sortType: sortType)
+		}
 		viewController.sortButton.title = sortType.buttonTitle
 	}
 }
@@ -314,7 +327,7 @@ extension PostListLogicController: UITableViewDataSource {
 
 extension PostListLogicController: UITableViewDelegate {
 	func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-		viewController.resignFirstResponder()
+		viewController.searchField.resignFirstResponder()
 	}
 
 	func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
