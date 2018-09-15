@@ -144,8 +144,12 @@ class Post: Object {
 		} else if let name = tags.first?.name {
 			return name
 		} else {
-			assertionFailure("should have a reason")
-			return ""
+			//probably searched
+			print("⚠️ no reason for showing: \(self.title) \((self.postId))")
+			return nil
+		}
+	}
+
 		}
 	}
 
