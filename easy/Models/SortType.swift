@@ -34,7 +34,7 @@ enum ListSortType {
 		}
 	}
 
-	private var sortDescriptors: [SortDescriptor] {
+	var sortDescriptors: [SortDescriptor] {
 		switch self {
 		case .byClapCountPerDayDescending:
 			return [SortDescriptor(keyPath: "clapsPerDay", ascending: false)]
@@ -67,7 +67,7 @@ enum ListSortType {
 		return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 	}
 
-	private var filters: [NSPredicate] {
+	var filters: [NSPredicate] {
 		if case .search(let query, _, _) = self {
 			let words = query.lowercased().components(separatedBy: " ")
 			let orPredicates = NSCompoundPredicate(orPredicateWithSubpredicates:
