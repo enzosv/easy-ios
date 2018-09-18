@@ -36,6 +36,11 @@ class MediumService {
 		print("‼️ \(self) deinited")
 	}
 	func requestResource(_ resource: Resource) -> Promise<[Post]> {
+		//prevents construction of duplicate requests
+		let contains = requests.contains { $0.resource.urlString == resource.urlString}
+		guard !contains else {
+			return Promise<[Post]>.init(error: ResourceError.duplicateRequest)
+		}
 		let request = ResourceRequest(resource: resource)
 		queueRequest(request)
 		return request.promise
@@ -67,18 +72,6 @@ class MediumService {
 	}
 
 	private func queueRequest(_ request: ResourceRequest) {
-		guard let urlString = request.resource.urlString else {
-			assertionFailure("no url for request")
-			return
-		}
-		let contains = requests.contains { $0.resource.urlString == urlString}
-		guard !contains else {
-			print("⚠️ \(urlString) already in queue")
-			request.resolver.reject(PMKError.cancelled)
-			//already in queue
-			//TODO: consider prioritizing
-			return
-		}
 		requests.append(request)
 		performRequest(request)
 	}

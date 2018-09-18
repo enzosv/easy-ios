@@ -9,9 +9,12 @@
 private let ROOTURL = "https://medium.com"
 
 enum ResourceError: Error {
+	case duplicateRequest
 	case invalidJSON(urlString:String)
 	var localizedDescription: String {
 		switch self {
+		case .duplicateRequest:
+			return "Duplicate request"
 		case .invalidJSON(let urlString):
 			return "Invalid JSON for \(urlString)"
 		}
