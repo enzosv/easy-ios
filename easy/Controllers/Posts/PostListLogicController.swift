@@ -40,7 +40,7 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 	private var selectedListModeIndex: Int = 0
 	private var selectedSortTypeIndex: Int = 0
 	var sortType: ListSortType {
-		guard let sort = listModes[safe: selectedListModeIndex]?.sortTypes[safe: selectedSortTypeIndex] else{
+		guard let sort = listModes[safe: selectedListModeIndex]?.sortTypes[safe: selectedSortTypeIndex] else {
 			assertionFailure("out of bounds")
 			return .byClapCountPerDayDescending
 		}
@@ -50,7 +50,7 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 			return .search(query, filter, sort.sortDescriptors)
 		}
 		return sort
-		
+
 	}
 
 	deinit {

@@ -127,7 +127,10 @@ enum ListMode {
 					.byDatePostedDescending]
 		case .read:
 			return [.byDateReadDescending,
-					.byUpvoteCountDescending]
+					.byUpvoteCountDescending,
+					.byClapCountPerDayDescending,
+					.byClapCountDescending,
+					.byDatePostedDescending]
 		}
 	}
 }
