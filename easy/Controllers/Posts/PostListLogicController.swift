@@ -39,7 +39,19 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 	private let listModes: [ListMode] = [.unread, .read]
 	private var selectedListModeIndex: Int = 0
 	private var selectedSortTypeIndex: Int = 0
-	var sortType: ListSortType = ListSortType.byClapCountPerDayDescending
+	var sortType: ListSortType {
+		guard let sort = listModes[safe: selectedListModeIndex]?.sortTypes[safe: selectedSortTypeIndex] else{
+			assertionFailure("out of bounds")
+			return .byClapCountPerDayDescending
+		}
+		if let query = searchQuery,
+			query.count > 0,
+			let filter = sort.filters.first {
+			return .search(query, filter, sort.sortDescriptors)
+		}
+		return sort
+		
+	}
 
 	deinit {
 		for token in notificationTokens {
@@ -80,20 +92,7 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 		searchService.cancelAllRequests()
 		searchQuery = query
 		debouncedSearch.call()
-		if let query = query,
-			query.count > 0 {
-			guard let selectedSortType = listModes[safe: selectedListModeIndex]?
-				.sortTypes[safe: selectedSortTypeIndex],
-				let filter = selectedSortType.filters.first else {
-					assertionFailure("filter and sorts should exist")
-					return
-			}
-			viewController.setFilterButtonsHidden(true)
-			setupPosts(sortType: ListSortType.search(query, filter, selectedSortType.sortDescriptors))
-		} else {
-			viewController.setFilterButtonsHidden(false)
-			setupPosts(sortType: sortType)
-		}
+		setupPosts(sortType: sortType)
 	}
 
 	private func fetchTopics(_ topics: Results<Topic>, using service: MediumService) {
@@ -142,7 +141,6 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 
 	// MARK: Inputs
 	func setupPosts(sortType: ListSortType) {
-		self.sortType = sortType
 		self.posts = sortType.posts
 		self.viewController.table.reloadData()
 
@@ -188,7 +186,7 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 			}
 		}
 
-		service.onAllCompletion = { [weak self] in
+		service.onAllCompletion = {
 			Defaults[.lastRefreshDate] = Date().timeIntervalSince1970
 			DispatchQueue.main.async {
 				table.es.stopPullToRefresh()
@@ -220,7 +218,6 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 			DispatchQueue.main.async {
 				animator.refresh(view: header, stateDidChange: newState)
 			}
-			print((header.animator as? ESRefreshHeaderAnimator)?.loadingDescription)
 		}
 
 		autoFetchPosts(table: table)
@@ -257,7 +254,7 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 			controller.addAction(UIAlertAction(title: type.buttonTitle, style: .default, handler: { [unowned self] _ in
 				sender.title = type.buttonTitle
 				self.selectedSortTypeIndex = index
-				self.setupPosts(sortType: type)
+				self.setupPosts(sortType: self.sortType)
 			}))
 		}
 		controller.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
@@ -271,20 +268,12 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 	@objc func listSwitch(sender: UISegmentedControl) {
 		viewController.hideReview()
 		selectedListModeIndex = sender.selectedSegmentIndex
-		guard let listMode = listModes[safe: selectedListModeIndex],
-			let sortType = listMode.sortTypes.first else {
-			assertionFailure("out of bounds")
-			return
-		}
-		if case .search(let query, _, _) = self.sortType,
-			let filter = sortType.filters.first {
-			setupPosts(sortType: .search(query, filter, sortType.sortDescriptors))
-		} else {
-			// TODO: consider previously selected type for mode
-			selectedSortTypeIndex = 0
-			setupPosts(sortType: sortType)
-		}
-		viewController.sortButton.title = sortType.buttonTitle
+		//TODO: use previous selected for type
+		selectedSortTypeIndex = 0
+		setupPosts(sortType: sortType)
+		viewController.sortButton.title =
+			listModes[safe: sender.selectedSegmentIndex]?.sortTypes[0].buttonTitle
+			?? ListSortType.byClapCountPerDayDescending.buttonTitle
 	}
 }
 
