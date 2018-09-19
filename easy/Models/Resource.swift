@@ -6,15 +6,23 @@
 //  Copyright © 2018 enzosv. All rights reserved.
 //
 
+import Foundation.NSError
+
 private let ROOTURL = "https://medium.com"
 
-enum ResourceError: Error {
-	case duplicateRequest
+public enum ResourceError: Error {
+	case duplicateRequest(urlString:String)
+	case unnecessaryUpdate(urlString:String)
 	case invalidJSON(urlString:String)
-	var localizedDescription: String {
+}
+
+extension ResourceError: LocalizedError {
+	public var errorDescription: String? {
 		switch self {
-		case .duplicateRequest:
-			return "Duplicate request"
+		case .duplicateRequest(let urlString):
+			return "Duplicate request: \(urlString)"
+		case .unnecessaryUpdate(let urlString):
+			return "Unnecessary update: \(urlString)"
 		case .invalidJSON(let urlString):
 			return "Invalid JSON for \(urlString)"
 		}
