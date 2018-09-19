@@ -33,7 +33,7 @@ class MediumService {
 	private var requests = [ResourceRequest]()
 
 	deinit {
-		print("‼️ \(self) deinited")
+		debugLog("‼️ \(self) deinited")
 	}
 	func requestResource(_ resource: Resource) -> Promise<[Post]> {
 		//prevents construction of duplicate requests
@@ -48,7 +48,7 @@ class MediumService {
 
 	func cancelAllRequests() {
 		for request in requests {
-			print("cancelling \(request.resource.urlString ?? "nil")")
+			debugLog("cancelling \(request.resource.urlString ?? "nil")")
 			if currentDataRequest?.request?.url?.absoluteString == request.resource.urlString {
 				currentDataRequest?.cancel()
 			} else {
@@ -58,7 +58,7 @@ class MediumService {
 	}
 
 	func cancelRequest(for resource: Resource) {
-		print("cancelling \(resource.urlString ?? "nil")")
+		debugLog("cancelling \(resource.urlString ?? "nil")")
 		for request in requests {
 			guard request.resource.urlString == resource.urlString else {
 				continue
@@ -82,7 +82,7 @@ class MediumService {
 			return
 		}
 		guard currentDataRequest == nil else {
-			print("queing request: \(urlString)")
+			debugLog("queing request: \(urlString)")
 			//different request already in progress. delay
 			return
 		}
@@ -90,11 +90,11 @@ class MediumService {
 		//perform next request after success/failure
 		request.promise
 			.catch { error in
-				print("❌ \(error.localizedDescription)")
+				debugLog("❌ \(error.localizedDescription)")
 			}
 			.finally {
 				if let index = self.requests.index(where: {$0.resource.urlString == urlString}) {
-					print("removing request: \(urlString)")
+					debugLog("removing request: \(urlString)")
 					self.requests.remove(at: index)
 				} else {
 					assertionFailure("\(urlString) not in stack")
@@ -114,7 +114,7 @@ class MediumService {
 		currentDataRequest = Alamofire.request(urlString, headers: ["accept": "application/json"])
 		assert(currentDataRequest != nil, "\(urlString) is invalid")
 
-		print("requesting: \(urlString)")
+		debugLog("requesting: \(urlString)")
 		onStart?(request.resource, requests.count+completedRequestCount, completedRequestCount+1)
 		currentDataRequest?.responseString { response in
 			//not using weak self to keep service alive
@@ -125,10 +125,10 @@ class MediumService {
 					request.resolver.reject(ResourceError.invalidJSON(urlString: urlString))
 					return
 				}
-				print("✅ successful request:\n\t\(response.response?.statusCode ?? -1): \(urlString)")
+				debugLog("✅ successful request:\n\t\(response.response?.statusCode ?? -1): \(urlString)")
 				request.resolver.fulfill(posts)
 			case .failure(let error):
-				print("⚠️ request failed:\n\t\(response.response?.statusCode ?? -1): \(urlString)")
+				debugLog("⚠️ request failed:\n\t\(response.response?.statusCode ?? -1): \(urlString)")
 				request.resolver.reject(error)
 			}
 		}
@@ -142,11 +142,11 @@ class MediumService {
 			let payload = json["payload"].dictionary,
 			let references = payload["references"]?.dictionary else {
 				//happens when search is empty
-				print("⚠️ invalid posts json: \(jsonString)")
+				debugLog("⚠️ invalid posts json: \(jsonString)")
 				return nil
 		}
 		guard let posts = references["Post"]?.dictionary else {
-			print("⚠️ empty posts json: \(jsonString)")
+			debugLog("⚠️ empty posts json: \(jsonString)")
 			return []
 		}
 		let users = references["User"]?.dictionary
@@ -155,7 +155,7 @@ class MediumService {
 			let author: String? = {
 				guard let userId = json["creatorId"].string,
 					let user = users?[userId]?.dictionary else {
-						print("⚠️ no user")
+						debugLog("⚠️ no user")
 						return nil
 				}
 				return user["name"]?.string

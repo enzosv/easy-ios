@@ -145,7 +145,7 @@ class Post: Object {
 			return name
 		} else {
 			//probably searched
-			print("⚠️ no reason for showing: \(self.title) \((self.postId))")
+			debugLog("⚠️ no reason for showing: \(self.title) \((self.postId))")
 			return nil
 		}
 	}

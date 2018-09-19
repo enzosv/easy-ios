@@ -122,7 +122,7 @@ class FilterableListViewController: UIViewController {
 
 	deinit {
 		allToken?.invalidate()
-		print("DEINITIALIZED: \(self)")
+		debugLog("‼️ \(self) deinited")
 	}
 
 	init(filterMode: FilterMode, inputs: PostListLogicController) {

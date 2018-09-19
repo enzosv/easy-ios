@@ -50,6 +50,6 @@ class RealmService {
 		try? realm.write {
 			realm.add(posts, update: true)
 		}
-//		print("\(posts.count) new or updated posts")
+//		debugLog("\(posts.count) new or updated posts")
 	}
 }
