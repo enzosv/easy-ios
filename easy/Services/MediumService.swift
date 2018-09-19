@@ -36,10 +36,13 @@ class MediumService {
 		debugLog("‼️ \(self) deinited")
 	}
 	func requestResource(_ resource: Resource) -> Promise<[Post]> {
+		guard let urlString = resource.urlString else {
+			return Promise<[Post]>.init(error: PMKError.badInput)
+		}
 		//prevents construction of duplicate requests
-		let contains = requests.contains { $0.resource.urlString == resource.urlString}
+		let contains = requests.contains { $0.resource.urlString == urlString}
 		guard !contains else {
-			return Promise<[Post]>.init(error: ResourceError.duplicateRequest)
+			return Promise<[Post]>.init(error: ResourceError.duplicateRequest(urlString: urlString))
 		}
 		let request = ResourceRequest(resource: resource)
 		queueRequest(request)
