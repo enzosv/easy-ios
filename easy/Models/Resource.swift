@@ -34,6 +34,7 @@ enum Resource {
 	case topic(String)
 	case tag(String)
 	case search(String)
+	case update(String)
 
 	var urlString: String? {
 		switch self {
@@ -57,6 +58,8 @@ enum Resource {
 				return nil
 			}
 			return "\(ROOTURL)/search?q=\(encoded)"
+		case .update(let postId):
+			return "\(ROOTURL)/search?q=\(postId)"
 		}
 	}
 }

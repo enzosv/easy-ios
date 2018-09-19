@@ -211,6 +211,8 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 					return name
 				case .search(let query):
 					return query
+				case .update(let postId):
+					return postId
 				}
 			}()
 			animator.loadingDescription = "Loading \(loadingName) (\(completedRequestCount)/\(totalRequestCount))"
