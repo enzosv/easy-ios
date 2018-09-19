@@ -8,6 +8,6 @@
 
 func debugLog(_ items: String) {
 	#if DEBUG
-	Swift.print("👩‍💻 \(items)")
+	Swift.print("🔎 \(items)")
 	#endif
 }
