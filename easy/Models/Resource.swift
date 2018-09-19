@@ -14,6 +14,7 @@ public enum ResourceError: Error {
 	case duplicateRequest(urlString:String)
 	case unnecessaryUpdate(urlString:String)
 	case invalidJSON(urlString:String)
+	case other(message:String)
 }
 
 extension ResourceError: LocalizedError {
@@ -25,6 +26,8 @@ extension ResourceError: LocalizedError {
 			return "Unnecessary update: \(urlString)"
 		case .invalidJSON(let urlString):
 			return "Invalid JSON for \(urlString)"
+		case .other(let message):
+			return message
 		}
 	}
 }

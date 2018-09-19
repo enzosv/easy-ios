@@ -36,16 +36,17 @@ class MediumService {
 		debugLog("‼️ \(self) deinited")
 	}
 	func requestResource(_ resource: Resource) -> Promise<[Post]> {
-		guard let urlString = resource.urlString else {
-			return Promise<[Post]>.init(error: PMKError.badInput)
+
+		let result = prepareRequest(resource: resource)
+		if let error = result.error {
+			return Promise<[Post]>.init(error: error)
 		}
-		//prevents construction of duplicate requests
-		let contains = requests.contains { $0.resource.urlString == urlString}
-		guard !contains else {
-			return Promise<[Post]>.init(error: ResourceError.duplicateRequest(urlString: urlString))
+		guard let request = result.request else {
+			assertionFailure("Error should exist")
+			return Promise<[Post]>.init(error: ResourceError.other(message: "unknown error"))
 		}
-		let request = ResourceRequest(resource: resource)
-		queueRequest(request)
+		requests.append(request)
+		performRequest(request)
 		return request.promise
 	}
 
@@ -74,16 +75,18 @@ class MediumService {
 		}
 	}
 
-	private func queueRequest(_ request: ResourceRequest) {
-		requests.append(request)
-		performRequest(request)
-	}
-
-	private func prepareRequest(_ request: ResourceRequest) {
-		guard let urlString = request.resource.urlString else {
+	private func prepareRequest(resource: Resource) -> (request: ResourceRequest?, error: Error?) {
+		guard let urlString = resource.urlString else {
 			assertionFailure("no url for request")
-			return
+			return (nil, PMKError.badInput)
 		}
+		//prevent construction of duplicate requests
+		let contains = requests.contains { $0.resource.urlString == urlString}
+		guard !contains else {
+			return (nil, ResourceError.duplicateRequest(urlString: urlString))
+		}
+
+		let request = ResourceRequest(resource: resource)
 		request.promise
 			.catch { error in
 				debugLog("❌ \(error.localizedDescription)")
@@ -106,27 +109,26 @@ class MediumService {
 					}
 				})
 		}
+		return (request, nil)
+	}
 
+	private func performRequest(_ request: ResourceRequest) {
+		guard let urlString = request.resource.urlString else {
+			assertionFailure("no url for request")
+			request.resolver.reject(PMKError.badInput)
+			return
+		}
+		guard currentDataRequest == nil else {
+			//different request already in progress. delay
+			debugLog("queing request: \(urlString)")
+			return
+		}
 		if case .update(let postId) = request.resource,
 			let existing = Post.existing(with: postId),
 			!existing.needsUpdate {
 			request.resolver.reject(ResourceError.unnecessaryUpdate(urlString: urlString))
 			return
 		}
-	}
-
-	private func performRequest(_ request: ResourceRequest) {
-		guard let urlString = request.resource.urlString else {
-			assertionFailure("no url for request")
-			return
-		}
-		guard currentDataRequest == nil else {
-			debugLog("queing request: \(urlString)")
-			//different request already in progress. delay
-			return
-		}
-		prepareRequest(request)
-
 		currentDataRequest = Alamofire.request(urlString, headers: ["accept": "application/json"])
 		assert(currentDataRequest != nil, "\(urlString) is invalid")
 
