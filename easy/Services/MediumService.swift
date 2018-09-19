@@ -79,18 +79,11 @@ class MediumService {
 		performRequest(request)
 	}
 
-	private func performRequest(_ request: ResourceRequest) {
+	private func prepareRequest(_ request: ResourceRequest) {
 		guard let urlString = request.resource.urlString else {
 			assertionFailure("no url for request")
 			return
 		}
-		guard currentDataRequest == nil else {
-			debugLog("queing request: \(urlString)")
-			//different request already in progress. delay
-			return
-		}
-
-		//perform next request after success/failure
 		request.promise
 			.catch { error in
 				debugLog("❌ \(error.localizedDescription)")
@@ -113,6 +106,26 @@ class MediumService {
 					}
 				})
 		}
+
+		if case .update(let postId) = request.resource,
+			let existing = Post.existing(with: postId),
+			!existing.needsUpdate {
+			request.resolver.reject(ResourceError.unnecessaryUpdate(urlString: urlString))
+			return
+		}
+	}
+
+	private func performRequest(_ request: ResourceRequest) {
+		guard let urlString = request.resource.urlString else {
+			assertionFailure("no url for request")
+			return
+		}
+		guard currentDataRequest == nil else {
+			debugLog("queing request: \(urlString)")
+			//different request already in progress. delay
+			return
+		}
+		prepareRequest(request)
 
 		currentDataRequest = Alamofire.request(urlString, headers: ["accept": "application/json"])
 		assert(currentDataRequest != nil, "\(urlString) is invalid")
