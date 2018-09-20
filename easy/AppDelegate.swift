@@ -20,6 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 		RealmService.performMigration()
 		RealmService.initializeDefaults()
+		RealmService.updateDates()
 
 		window = UIWindow(frame: UIScreen.main.bounds)
 		window!.rootViewController = RootTabViewController()

@@ -55,7 +55,7 @@ class Post: Object {
 		if (existing?.updatedAt ?? 0) >= updatedAt {
 			let realm = try? Realm()
 			try? realm?.write {
-				existing?.updateDates()
+				existing?.lastUpdateCheck = Date().timeIntervalSince1970
 			}
 			return nil
 		}
@@ -99,9 +99,8 @@ class Post: Object {
 			}
 			return queryStrings.joined(separator: " ").lowercased()
 		}()
-
 		post.updateDates()
-
+		post.lastUpdateCheck = Date().timeIntervalSince1970
 		//USER SET VALUES
 		post.isIgnored = existing?.isIgnored ?? false
 		post.upvoteCount = existing?.upvoteCount ?? 0
@@ -122,13 +121,16 @@ class Post: Object {
 		return realm.objects(Post.self)
 	}
 
-	private func updateDates() {
+	func updateDates() {
 		let secondsSinceFirstPublished = Date().timeIntervalSince1970-firstPublishedAt/1000
-		let daysSinceFirstPublished = Float(secondsSinceFirstPublished/86400)
-
-		clapsPerDay = Float(totalClapCount)/daysSinceFirstPublished
-		recommendsPerDay = Float(recommends)/daysSinceFirstPublished
-		lastUpdateCheck = Date().timeIntervalSince1970
+		let daysSinceFirstPublished = Int(secondsSinceFirstPublished/86400)
+		if daysSinceFirstPublished == 0 {
+			clapsPerDay = Float(totalClapCount)
+			recommendsPerDay = Float(recommends)
+		} else {
+			clapsPerDay = Float(totalClapCount/daysSinceFirstPublished)
+			recommendsPerDay = Float(recommends/daysSinceFirstPublished)
+		}
 	}
 
 	var reasonForShowing: String? {

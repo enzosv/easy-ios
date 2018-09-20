@@ -36,6 +36,19 @@ class RealmService {
 
 	}
 
+	static func updateDates() {
+		guard let realm = try? Realm() else {
+			assertionFailure("no realm")
+			return
+		}
+		let posts = Post.all
+		try? realm.write {
+			for post in posts {
+				post.updateDates()
+			}
+		}
+	}
+
 	static func initializeDefaults() {
 		if !Defaults.hasKey(.isPremiumIncluded) {
 			Defaults[.isPremiumIncluded] = true
