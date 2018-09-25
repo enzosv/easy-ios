@@ -15,15 +15,12 @@ class Post: Object {
 	@objc dynamic var postId: String = ""
 	@objc dynamic var firstPublishedAt: Double = Double.nan
 	@objc dynamic var createdAt: Double = Double.nan
-	@objc dynamic var updatedAt: Double = Double.nan
 	@objc dynamic var readingTime: Double = Double.nan
 	@objc dynamic var isSubscriptionLocked: Bool = true
 	@objc dynamic var recommends: Int = 0
 	@objc dynamic var totalClapCount: Int = 0
 	@objc dynamic var title: String = ""
 	@objc dynamic var author: String?
-
-	@objc dynamic var lastUpdateCheck: Double = Double.nan
 
 	@objc dynamic var recommendsPerDay: Float = 0
 	@objc dynamic var clapsPerDay: Float = 0
@@ -40,6 +37,33 @@ class Post: Object {
 		return dateRead != nil
 	}
 
+	var reasonForShowing: String? {
+		let includedTopics = topics.filter("isIncluded == true")
+		if let name = includedTopics.filter("topicId != %@", Topic.POPULARID).first?.name {
+			return name
+		} else if let name = tags.filter("isIncluded == true").first?.name {
+			return name
+		} else if let name = includedTopics.first?.name {
+			return name
+		} else if let name = topics.first?.name {
+			return name
+		} else if let name = tags.first?.name {
+			return name
+		} else {
+			//probably searched
+			debugLog("⚠️ no reason for showing: \(self.title) \((self.postId))")
+			return nil
+		}
+	}
+
+	var needsUpdate: Bool {
+		guard let housekeeping = PostHousekeeping.existing(postId: postId) else {
+			assertionFailure("housekeeping must exist")
+			return true
+		}
+		return housekeeping.lastUpdateCheck+86400 < Date().timeIntervalSince1970
+	}
+
 	override static func primaryKey() -> String? {
 		return "postId"
 	}
@@ -52,11 +76,11 @@ class Post: Object {
 				return nil
 		}
 		let existing = Post.existing(with: postId)
-		if (existing?.updatedAt ?? 0) >= updatedAt {
-			let realm = try? Realm()
-			try? realm?.write {
-				existing?.lastUpdateCheck = Date().timeIntervalSince1970
-			}
+		let oldUpdatedAt = PostHousekeeping.existing(postId: postId)?.updatedAt
+			?? 0
+		PostHousekeeping.createOrUpdate(updatedAt: updatedAt, lastCheck: Date().timeIntervalSince1970, for: postId)
+		guard oldUpdatedAt < updatedAt else {
+			assert(oldUpdatedAt == updatedAt, "old must not be greater than new")
 			return nil
 		}
 		guard
@@ -78,7 +102,6 @@ class Post: Object {
 		let post = Post()
 		post.postId = postId
 		post.firstPublishedAt = firstPublishedAt
-		post.updatedAt = updatedAt
 		post.createdAt = createdAt
 		post.title = title
 		post.readingTime = readingTime
@@ -100,7 +123,6 @@ class Post: Object {
 			return queryStrings.joined(separator: " ").lowercased()
 		}()
 		post.updateDates()
-		post.lastUpdateCheck = Date().timeIntervalSince1970
 		//USER SET VALUES
 		post.isIgnored = existing?.isIgnored ?? false
 		post.upvoteCount = existing?.upvoteCount ?? 0
@@ -131,29 +153,6 @@ class Post: Object {
 			clapsPerDay = Float(totalClapCount/daysSinceFirstPublished)
 			recommendsPerDay = Float(recommends/daysSinceFirstPublished)
 		}
-	}
-
-	var reasonForShowing: String? {
-		let includedTopics = topics.filter("isIncluded == true")
-		if let name = includedTopics.filter("topicId != %@", Topic.POPULARID).first?.name {
-			return name
-		} else if let name = tags.filter("isIncluded == true").first?.name {
-			return name
-		} else if let name = includedTopics.first?.name {
-			return name
-		} else if let name = topics.first?.name {
-			return name
-		} else if let name = tags.first?.name {
-			return name
-		} else {
-			//probably searched
-			debugLog("⚠️ no reason for showing: \(self.title) \((self.postId))")
-			return nil
-		}
-	}
-
-	var needsUpdate: Bool {
-		return lastUpdateCheck+86400 < Date().timeIntervalSince1970
 	}
 
 	func updateIfNeeded(using service: MediumService) {

@@ -13,15 +13,22 @@ class RealmService {
 
 	static func performMigration() {
 		let config = Realm.Configuration(
-			schemaVersion: 5,
+			schemaVersion: 6,
 			migrationBlock: { migration, oldSchemaVersion in
-				if oldSchemaVersion < 5 {
-					migration.enumerateObjects(ofType: Post.className()) { oldObject, newObject in
-						guard let updatedAt = oldObject?["updatedAt"] as? Double else {
-							assertionFailure("no updated at")
-							return
+				if oldSchemaVersion < 6 {
+					migration.enumerateObjects(ofType: Post.className()) { oldObject, _ in
+						let housekeeping = migration.create(PostHousekeeping.className())
+						guard
+							let postId = oldObject?["postId"] as? String,
+							let updatedAt = oldObject?["updatedAt"] as? Double
+							else {
+								assertionFailure("invalid post")
+								return
 						}
-						newObject?["lastUpdateCheck"] = updatedAt/1000
+						let lastUpdateCheck = oldObject?["lastUpdateCheck"] as? Double ?? updatedAt/1000
+						housekeeping["postId"] = postId
+						housekeeping["updatedAt"] = updatedAt
+						housekeeping["lastUpdateCheck"] = lastUpdateCheck
 					}
 				}
 		})
