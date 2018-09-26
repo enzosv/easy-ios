@@ -99,6 +99,27 @@ class Post: Object {
 				return nil
 		}
 
+		let queryString: String = {
+			var queryStrings: [String] = [title]
+			queryStrings.append(contentsOf: tags.map {$0.name})
+			queryStrings.append(contentsOf: topics.map {$0.name})
+			if let author = author {
+				queryStrings.append(author)
+			}
+			return queryStrings.joined(separator: " ").lowercased()
+		}()
+
+		guard existing?.totalClapCount != totalClapCount
+			|| existing?.recommends != recommends
+			|| existing?.queryString != queryString
+			|| existing?.createdAt != createdAt
+			|| existing?.firstPublishedAt != firstPublishedAt
+			|| existing?.isSubscriptionLocked != isSubscriptionLocked
+			|| existing?.readingTime != readingTime else {
+				debugLog("updated \(title) with no changes... skipping")
+			return nil
+		}
+
 		let post = Post()
 		post.postId = postId
 		post.firstPublishedAt = firstPublishedAt
@@ -113,15 +134,7 @@ class Post: Object {
 		post.author = author
 
 		//DERIVED VALUES
-		post.queryString = {
-			var queryStrings: [String] = [title]
-			queryStrings.append(contentsOf: tags.map {$0.name})
-			queryStrings.append(contentsOf: topics.map {$0.name})
-			if let author = author {
-				queryStrings.append(author)
-			}
-			return queryStrings.joined(separator: " ").lowercased()
-		}()
+		post.queryString = queryString
 		post.updateDates()
 		//USER SET VALUES
 		post.isIgnored = existing?.isIgnored ?? false
