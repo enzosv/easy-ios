@@ -15,6 +15,7 @@ private let readIdentifier = "readPostCell"
 
 class PostListLogicController: NSObject, PostOptionsPresenter {
 
+	static let DEFAULTSORT: ListSortType = .byClapCountPerDayDescending(NSPredicate(format: "dateRead == nil"))
 	private var posts: [Results<Post>]!
 	private var notificationTokens: [NotificationToken?] = []
 	var onPresentRequest: ((UIViewController) -> Void)?
@@ -42,7 +43,7 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 	var sortType: ListSortType {
 		guard let sort = listModes[safe: selectedListModeIndex]?.sortTypes[safe: selectedSortTypeIndex] else {
 			assertionFailure("out of bounds")
-			return .byClapCountPerDayDescending
+			return PostListLogicController.DEFAULTSORT
 		}
 		if let query = searchQuery,
 			query.count > 0,
@@ -275,7 +276,7 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 		setupPosts(sortType: sortType)
 		viewController.sortButton.title =
 			listModes[safe: sender.selectedSegmentIndex]?.sortTypes[0].buttonTitle
-			?? ListSortType.byClapCountPerDayDescending.buttonTitle
+			?? PostListLogicController.DEFAULTSORT.buttonTitle
 	}
 }
 

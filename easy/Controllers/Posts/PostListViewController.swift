@@ -85,7 +85,7 @@ class PostListViewController: UIViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		logicController.setupPosts(sortType: .byClapCountPerDayDescending)
+		logicController.setupPosts(sortType: PostListLogicController.DEFAULTSORT)
 		logicController.setupTable(table)
 		logicController.setupSearch(field: searchField)
 		logicController.setupListSwitcher(listSwitcher)
