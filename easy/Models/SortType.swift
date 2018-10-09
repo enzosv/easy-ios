@@ -10,11 +10,11 @@ import RealmSwift
 import SwiftyUserDefaults
 
 enum ListSortType {
-	case byDateReadDescending
-	case byUpvoteCountDescending
-	case byClapCountPerDayDescending
-	case byClapCountDescending
-	case byDatePostedDescending
+	case byDateReadDescending(NSPredicate)
+	case byUpvoteCountDescending(NSPredicate)
+	case byClapCountPerDayDescending(NSPredicate)
+	case byClapCountDescending(NSPredicate)
+	case byDatePostedDescending(NSPredicate)
 	case search(String, NSPredicate, [SortDescriptor])
 
 	var buttonTitle: String? {
@@ -81,12 +81,12 @@ enum ListSortType {
 		}
 
 		switch self {
-		case .byClapCountPerDayDescending,
-			 .byClapCountDescending,
-			 .byDatePostedDescending:
-			return [NSPredicate(format: "dateRead == nil")]
-		case .byDateReadDescending, .byUpvoteCountDescending:
-			return [NSPredicate(format: "dateRead != nil")]
+		case .byClapCountPerDayDescending(let predicate),
+			 .byClapCountDescending(let predicate),
+			 .byDatePostedDescending(let predicate),
+			.byDateReadDescending(let predicate),
+			.byUpvoteCountDescending(let predicate):
+			return [predicate]
 		case .search:
 			preconditionFailure("handle this before creating andpredicates")
 		}
@@ -122,15 +122,17 @@ enum ListMode {
 	var sortTypes: [ListSortType] {
 		switch self {
 		case .unread:
-			return [.byClapCountPerDayDescending,
-					.byClapCountDescending,
-					.byDatePostedDescending]
+			let predicate = NSPredicate(format: "dateRead == nil")
+			return [.byClapCountPerDayDescending(predicate),
+					.byClapCountDescending(predicate),
+					.byDatePostedDescending(predicate)]
 		case .read:
-			return [.byDateReadDescending,
-					.byUpvoteCountDescending,
-					.byClapCountPerDayDescending,
-					.byClapCountDescending,
-					.byDatePostedDescending]
+			let predicate = NSPredicate(format: "dateRead != nil")
+			return [.byDateReadDescending(predicate),
+					.byUpvoteCountDescending(predicate),
+					.byClapCountPerDayDescending(predicate),
+					.byClapCountDescending(predicate),
+					.byDatePostedDescending(predicate)]
 		}
 	}
 }
