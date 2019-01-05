@@ -32,6 +32,23 @@ class MediumService {
 	private var currentDataRequest: DataRequest?
 	private var requests = [ResourceRequest]()
 
+    private static let sessionManager: Alamofire.SessionManager = {
+        let identifier = "\(Bundle.main.bundleIdentifier ?? Bundle.main.bundleURL.absoluteString).background"
+        let configuration = URLSessionConfiguration.background(
+            withIdentifier: identifier)
+        configuration.httpAdditionalHeaders = ["accept": "application/json"]
+        configuration.timeoutIntervalForRequest = 2000
+        configuration.timeoutIntervalForResource = 2000
+        configuration.sessionSendsLaunchEvents = false
+        configuration.shouldUseExtendedBackgroundIdleMode = true
+        configuration.httpMaximumConnectionsPerHost = 1
+        configuration.waitsForConnectivity = false
+        configuration.allowsCellularAccess = true
+        configuration.httpShouldSetCookies = false
+
+        return Alamofire.SessionManager(configuration: configuration)
+    }()
+
 	deinit {
 		debugLog("‼️ \(self) deinited")
 	}
@@ -129,7 +146,8 @@ class MediumService {
 			request.resolver.reject(ResourceError.unnecessaryUpdate(urlString: urlString))
 			return
 		}
-		currentDataRequest = Alamofire.request(urlString, headers: ["accept": "application/json"])
+
+		currentDataRequest = MediumService.sessionManager.request(urlString)
 		assert(currentDataRequest != nil, "\(urlString) is invalid")
 
 		debugLog("requesting: \(urlString)")
