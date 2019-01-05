@@ -193,35 +193,35 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 				table.es.stopPullToRefresh()
 			}
 		}
-		service.onStart = { (resource, totalRequestCount, completedRequestCount) in
-			guard let animator = header.animator as? ESRefreshHeaderAnimator else {
-				return
-			}
-
-			let loadingName: String = {
-				switch resource {
-				case .posts:
-					return "Home Feed"
-				case .tag(let name):
-					return name
-				case .topic(let topicId):
-					let realm = try? Realm()
-					guard let name = realm?.object(ofType: Topic.self, forPrimaryKey: topicId)?.name else {
-						return "Topics"
-					}
-					return name
-				case .search(let query):
-					return query
-				case .update(let postId):
-					return postId
-				}
-			}()
-			animator.loadingDescription = "Loading \(loadingName) (\(completedRequestCount)/\(totalRequestCount))"
-			let newState: ESRefreshViewState = animator.state == .refreshing ? .autoRefreshing : .refreshing
-			DispatchQueue.main.async {
-				animator.refresh(view: header, stateDidChange: newState)
-			}
-		}
+//        service.onStart = { (resource, totalRequestCount, completedRequestCount) in
+//            guard let animator = header.animator as? ESRefreshHeaderAnimator else {
+//                return
+//            }
+//
+//            let loadingName: String = {
+//                switch resource {
+//                case .posts:
+//                    return "Home Feed"
+//                case .tag(let name):
+//                    return name
+//                case .topic(let topicId):
+//                    let realm = try? Realm()
+//                    guard let name = realm?.object(ofType: Topic.self, forPrimaryKey: topicId)?.name else {
+//                        return "Topics"
+//                    }
+//                    return name
+//                case .search(let query):
+//                    return query
+//                case .update(let postId):
+//                    return postId
+//                }
+//            }()
+//            animator.loadingDescription = "Loading \(loadingName) (\(completedRequestCount)/\(totalRequestCount))"
+//            let newState: ESRefreshViewState = animator.state == .refreshing ? .autoRefreshing : .refreshing
+//            DispatchQueue.main.async {
+//                animator.refresh(view: header, stateDidChange: newState)
+//            }
+//        }
 
 		autoFetchPosts(table: table)
 	}

@@ -31,6 +31,7 @@
 		C68D62BC20F95DE800D2B8DD /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68D62BB20F95DE800D2B8DD /* Tag.swift */; };
 		C68D62BE20F9683900D2B8DD /* DefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68D62BD20F9683900D2B8DD /* DefaultsKeys.swift */; };
 		C6A17C432139C4D200F51945 /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A17C422139C4D200F51945 /* Debouncer.swift */; };
+		C6C2739121E1B8F600D69C9C /* MediumSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C2739021E1B8F600D69C9C /* MediumSessionManager.swift */; };
 		C6D827C421529F94005F76E6 /* DebugOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D827C321529F94005F76E6 /* DebugOptions.swift */; };
 		C6DC5CB920F9E4DE008E9CC8 /* Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DC5CB820F9E4DE008E9CC8 /* Resource.swift */; };
 		C6DC5CBC20F9F46B008E9CC8 /* PostListLogicController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DC5CBB20F9F46B008E9CC8 /* PostListLogicController.swift */; };
@@ -81,6 +82,7 @@
 		C68D62BB20F95DE800D2B8DD /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
 		C68D62BD20F9683900D2B8DD /* DefaultsKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsKeys.swift; sourceTree = "<group>"; };
 		C6A17C422139C4D200F51945 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
+		C6C2739021E1B8F600D69C9C /* MediumSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediumSessionManager.swift; sourceTree = "<group>"; };
 		C6D827C321529F94005F76E6 /* DebugOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugOptions.swift; sourceTree = "<group>"; };
 		C6DC5CB820F9E4DE008E9CC8 /* Resource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resource.swift; sourceTree = "<group>"; };
 		C6DC5CBB20F9F46B008E9CC8 /* PostListLogicController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListLogicController.swift; sourceTree = "<group>"; };
@@ -263,6 +265,7 @@
 				C68D62BD20F9683900D2B8DD /* DefaultsKeys.swift */,
 				C6DC5CBD20FA0D0A008E9CC8 /* Constants.swift */,
 				C6A17C422139C4D200F51945 /* Debouncer.swift */,
+				C6C2739021E1B8F600D69C9C /* MediumSessionManager.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -497,6 +500,7 @@
 				C6DC5CB920F9E4DE008E9CC8 /* Resource.swift in Sources */,
 				C68D62BE20F9683900D2B8DD /* DefaultsKeys.swift in Sources */,
 				C680284F211B194100C19981 /* UnreadPostTableViewCell.swift in Sources */,
+				C6C2739121E1B8F600D69C9C /* MediumSessionManager.swift in Sources */,
 				C63534E920F927DF0020BE22 /* Topic.swift in Sources */,
 				C63534D720F8F2990020BE22 /* RootTabViewController.swift in Sources */,
 				C68D62B720F9592800D2B8DD /* FilterRootViewController.swift in Sources */,
