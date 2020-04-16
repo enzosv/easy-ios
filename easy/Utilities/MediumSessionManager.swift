@@ -6,6 +6,7 @@
 //  Copyright © 2019 enzosv. All rights reserved.
 //
 
+import UIKit.UIApplication
 import PromiseKit
 import Alamofire
 import SwiftyJSON

@@ -6,6 +6,7 @@
 //  Copyright © 2018 enzosv. All rights reserved.
 //
 
+import Foundation
 import RealmSwift
 import DifferenceKit
 

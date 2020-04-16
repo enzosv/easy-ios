@@ -10,6 +10,7 @@ import RealmSwift
 import SwiftyJSON
 import Alamofire
 import SwiftyUserDefaults
+import Foundation
 
 class Post: Object {
 	@objc dynamic var postId: String = ""

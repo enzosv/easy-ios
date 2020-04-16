@@ -8,6 +8,7 @@
 
 import RealmSwift
 import SwiftyUserDefaults
+import Foundation
 
 class RealmService {
 

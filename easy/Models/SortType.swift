@@ -5,7 +5,7 @@
 //  Created by Lorenzo Rey Vergara on Sep 8, 2018.
 //  Copyright © 2018 enzosv. All rights reserved.
 //
-
+import Foundation
 import RealmSwift
 import SwiftyUserDefaults
 

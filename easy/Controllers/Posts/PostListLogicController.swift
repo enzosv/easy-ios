@@ -9,6 +9,8 @@
 import RealmSwift
 import SwiftyUserDefaults
 import ESPullToRefresh
+import Foundation
+import UIKit
 
 private let reuseIdentifier = "postCell"
 private let readIdentifier = "readPostCell"
