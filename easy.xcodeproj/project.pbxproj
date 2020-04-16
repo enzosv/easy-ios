@@ -3,11 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AF9ED553C1D8A1D023662C7E /* Pods_easy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4402E68A96F7F63ADD6B2180 /* Pods_easy.framework */; };
 		BC0F0C1F6839D1FDBD3BA588 /* Pods_easyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0A78EF15F9F99083BDA7C73 /* Pods_easyTests.framework */; };
 		C63534B720F8F0DC0020BE22 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63534B620F8F0DC0020BE22 /* AppDelegate.swift */; };
 		C63534B920F8F0DC0020BE22 /* PostListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63534B820F8F0DC0020BE22 /* PostListViewController.swift */; };
@@ -32,6 +31,15 @@
 		C68D62BE20F9683900D2B8DD /* DefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68D62BD20F9683900D2B8DD /* DefaultsKeys.swift */; };
 		C6A17C432139C4D200F51945 /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A17C422139C4D200F51945 /* Debouncer.swift */; };
 		C6C2739121E1B8F600D69C9C /* MediumSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C2739021E1B8F600D69C9C /* MediumSessionManager.swift */; };
+		C6CBE13E2448C4F000CD1B90 /* Pods_easy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4402E68A96F7F63ADD6B2180 /* Pods_easy.framework */; };
+		C6CBE13F2448C4F000CD1B90 /* Pods_easy.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4402E68A96F7F63ADD6B2180 /* Pods_easy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C6CBE14A2448D0E100CD1B90 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = C6CBE1492448D0E100CD1B90 /* SwiftPackageProductDependency */; };
+		C6CBE14D2448D14000CD1B90 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = C6CBE14C2448D14000CD1B90 /* SwiftPackageProductDependency */; };
+		C6CBE1502448D1BF00CD1B90 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = C6CBE14F2448D1BF00CD1B90 /* SwiftPackageProductDependency */; };
+		C6CBE1532448D21200CD1B90 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = C6CBE1522448D21200CD1B90 /* SwiftPackageProductDependency */; };
+		C6CBE1562448D25900CD1B90 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = C6CBE1552448D25900CD1B90 /* SwiftPackageProductDependency */; };
+		C6CBE1592448D28000CD1B90 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = C6CBE1582448D28000CD1B90 /* SwiftPackageProductDependency */; };
+		C6CBE15C2448D30B00CD1B90 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = C6CBE15B2448D30B00CD1B90 /* SwiftPackageProductDependency */; };
 		C6D827C421529F94005F76E6 /* DebugOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D827C321529F94005F76E6 /* DebugOptions.swift */; };
 		C6DC5CB920F9E4DE008E9CC8 /* Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DC5CB820F9E4DE008E9CC8 /* Resource.swift */; };
 		C6DC5CBC20F9F46B008E9CC8 /* PostListLogicController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DC5CBB20F9F46B008E9CC8 /* PostListLogicController.swift */; };
@@ -51,6 +59,20 @@
 			remoteInfo = easy;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C6CBE1402448C4F000CD1B90 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C6CBE13F2448C4F000CD1B90 /* Pods_easy.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		4402E68A96F7F63ADD6B2180 /* Pods_easy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_easy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -101,7 +123,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AF9ED553C1D8A1D023662C7E /* Pods_easy.framework in Frameworks */,
+				C6CBE14D2448D14000CD1B90 /* BuildFile in Frameworks */,
+				C6CBE1592448D28000CD1B90 /* BuildFile in Frameworks */,
+				C6CBE1502448D1BF00CD1B90 /* BuildFile in Frameworks */,
+				C6CBE13E2448C4F000CD1B90 /* Pods_easy.framework in Frameworks */,
+				C6CBE1562448D25900CD1B90 /* BuildFile in Frameworks */,
+				C6CBE1532448D21200CD1B90 /* BuildFile in Frameworks */,
+				C6CBE15C2448D30B00CD1B90 /* BuildFile in Frameworks */,
+				C6CBE14A2448D0E100CD1B90 /* BuildFile in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -311,13 +340,22 @@
 				C63534AF20F8F0DC0020BE22 /* Sources */,
 				C63534B020F8F0DC0020BE22 /* Frameworks */,
 				C63534B120F8F0DC0020BE22 /* Resources */,
-				D06B88068160F76C49AD9720 /* [CP] Embed Pods Frameworks */,
+				C6CBE1402448C4F000CD1B90 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = easy;
+			packageProductDependencies = (
+				C6CBE1492448D0E100CD1B90 /* SwiftPackageProductDependency */,
+				C6CBE14C2448D14000CD1B90 /* SwiftPackageProductDependency */,
+				C6CBE14F2448D1BF00CD1B90 /* SwiftPackageProductDependency */,
+				C6CBE1522448D21200CD1B90 /* SwiftPackageProductDependency */,
+				C6CBE1552448D25900CD1B90 /* SwiftPackageProductDependency */,
+				C6CBE1582448D28000CD1B90 /* SwiftPackageProductDependency */,
+				C6CBE15B2448D30B00CD1B90 /* SwiftPackageProductDependency */,
+			);
 			productName = easy;
 			productReference = C63534B320F8F0DC0020BE22 /* easy.app */;
 			productType = "com.apple.product-type.application";
@@ -374,6 +412,15 @@
 				Base,
 			);
 			mainGroup = C63534AA20F8F0DC0020BE22;
+			packageReferences = (
+				C6CBE1482448D0E100CD1B90 /* RemoteSwiftPackageReference */,
+				C6CBE14B2448D14000CD1B90 /* RemoteSwiftPackageReference */,
+				C6CBE14E2448D1BF00CD1B90 /* RemoteSwiftPackageReference */,
+				C6CBE1512448D21200CD1B90 /* RemoteSwiftPackageReference */,
+				C6CBE1542448D25900CD1B90 /* RemoteSwiftPackageReference */,
+				C6CBE1572448D28000CD1B90 /* RemoteSwiftPackageReference */,
+				C6CBE15A2448D30B00CD1B90 /* RemoteSwiftPackageReference */,
+			);
 			productRefGroup = C63534B420F8F0DC0020BE22 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -435,40 +482,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" autocorrect\n\"${PODS_ROOT}/SwiftLint/swiftlint\"";
-		};
-		D06B88068160F76C49AD9720 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-easy/Pods-easy-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/DifferenceKit/DifferenceKit.framework",
-				"${BUILT_PRODUCTS_DIR}/ESPullToRefresh/ESPullToRefresh.framework",
-				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
-				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
-				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftyUserDefaults/SwiftyUserDefaults.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DifferenceKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ESPullToRefresh.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyUserDefaults.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-easy/Pods-easy-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
 		};
 		ECF3980B727544BB78DDF089 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -676,14 +689,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 69U73E37TP;
+				DEVELOPMENT_TEAM = K6AKDY8QN9;
 				INFOPLIST_FILE = easy/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.enzosv.easy;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vergara.enzo.easy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -696,14 +709,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 69U73E37TP;
+				DEVELOPMENT_TEAM = K6AKDY8QN9;
 				INFOPLIST_FILE = easy/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.enzosv.easy;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vergara.enzo.easy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -785,6 +798,103 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C6CBE1482448D0E100CD1B90 /* RemoteSwiftPackageReference */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
+		C6CBE14B2448D14000CD1B90 /* RemoteSwiftPackageReference */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ra1028/DifferenceKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.5;
+			};
+		};
+		C6CBE14E2448D1BF00CD1B90 /* RemoteSwiftPackageReference */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mxcl/PromiseKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.13.1;
+			};
+		};
+		C6CBE1512448D21200CD1B90 /* RemoteSwiftPackageReference */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-cocoa";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.4.0;
+			};
+		};
+		C6CBE1542448D25900CD1B90 /* RemoteSwiftPackageReference */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.1;
+			};
+		};
+		C6CBE1572448D28000CD1B90 /* RemoteSwiftPackageReference */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftyJSON/SwiftyJSON";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+		C6CBE15A2448D30B00CD1B90 /* RemoteSwiftPackageReference */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/eggswift/pull-to-refresh";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.9.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C6CBE1492448D0E100CD1B90 /* SwiftPackageProductDependency */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C6CBE1482448D0E100CD1B90 /* RemoteSwiftPackageReference */;
+			productName = Alamofire;
+		};
+		C6CBE14C2448D14000CD1B90 /* SwiftPackageProductDependency */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C6CBE14B2448D14000CD1B90 /* RemoteSwiftPackageReference */;
+			productName = DifferenceKit;
+		};
+		C6CBE14F2448D1BF00CD1B90 /* SwiftPackageProductDependency */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C6CBE14E2448D1BF00CD1B90 /* RemoteSwiftPackageReference */;
+			productName = PromiseKit;
+		};
+		C6CBE1522448D21200CD1B90 /* SwiftPackageProductDependency */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C6CBE1512448D21200CD1B90 /* RemoteSwiftPackageReference */;
+			productName = RealmSwift;
+		};
+		C6CBE1552448D25900CD1B90 /* SwiftPackageProductDependency */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C6CBE1542448D25900CD1B90 /* RemoteSwiftPackageReference */;
+			productName = SnapKit;
+		};
+		C6CBE1582448D28000CD1B90 /* SwiftPackageProductDependency */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C6CBE1572448D28000CD1B90 /* RemoteSwiftPackageReference */;
+			productName = SwiftyJSON;
+		};
+		C6CBE15B2448D30B00CD1B90 /* SwiftPackageProductDependency */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C6CBE15A2448D30B00CD1B90 /* RemoteSwiftPackageReference */;
+			productName = ESPullToRefresh;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C63534AB20F8F0DC0020BE22 /* Project object */;
 }
