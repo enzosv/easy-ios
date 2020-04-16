@@ -7,7 +7,6 @@
 //
 import Foundation
 import RealmSwift
-import SwiftyUserDefaults
 
 enum ListSortType {
 	case byDateReadDescending(NSPredicate)
@@ -55,10 +54,11 @@ enum ListSortType {
 
 	private var defaultFilters: NSPredicate {
 		var andPredicates = [NSPredicate]()
-		if !Defaults[.isPremiumIncluded] {
+
+		if !Defaults.isPremiumIncluded.boolValue() {
 			andPredicates.append(NSPredicate(format: "isSubscriptionLocked == false"))
 		}
-		if !Defaults[.isShowingIgnored] {
+		if !Defaults.isShowingIgnored.boolValue() {
 			andPredicates.append(NSPredicate(format: "isIgnored == false"))
 		}
 		if Topic.included.count > 0 || Tag.included.count > 0 {

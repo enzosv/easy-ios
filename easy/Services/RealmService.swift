@@ -7,7 +7,6 @@
 //
 
 import RealmSwift
-import SwiftyUserDefaults
 import Foundation
 
 class RealmService {
@@ -58,21 +57,21 @@ class RealmService {
 	}
 
 	static func initializeDefaults() {
-		if !Defaults.hasKey(.isPremiumIncluded) {
-			Defaults[.isPremiumIncluded] = true
-		}
-        MediumSessionManager.shared.requestTopics()
-            .done { topics in
-            guard let realm = try? Realm() else {
-                assertionFailure("no realm")
-                return
-            }
-            try? realm.write {
-                realm.add(topics, update: .modified)
-            }
-        }.catch { error in
-            print(error)
+        if !Defaults.isPremiumIncluded.hasKey() {
+            Defaults.isPremiumIncluded.setValue(true)
         }
+//        MediumSessionManager.shared.requestTopics()
+//            .done { topics in
+//            guard let realm = try? Realm() else {
+//                assertionFailure("no realm")
+//                return
+//            }
+//            try? realm.write {
+//                realm.add(topics, update: .modified)
+//            }
+//        }.catch { error in
+//            print(error)
+//        }
 	}
 
 	func savePosts(_ posts: [Post]) {

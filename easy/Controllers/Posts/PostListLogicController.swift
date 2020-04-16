@@ -7,7 +7,6 @@
 //
 
 import RealmSwift
-import SwiftyUserDefaults
 import ESPullToRefresh
 import Foundation
 import UIKit
@@ -136,7 +135,8 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 	}
 
 	private func autoFetchPosts(table: UITableView) {
-		guard Defaults[.lastRefreshDate] < Date().timeIntervalSince1970 - 3600 else {
+
+		guard Defaults.lastRefreshDate.doubleValue() < Date().timeIntervalSince1970 - 3600 else {
 			return
 		}
 		table.es.startPullToRefresh()
@@ -190,7 +190,7 @@ class PostListLogicController: NSObject, PostOptionsPresenter {
 		}
 
 		service.onAllCompletion = {
-			Defaults[.lastRefreshDate] = Date().timeIntervalSince1970
+            Defaults.lastRefreshDate.setValue(Date().timeIntervalSince1970)
 			DispatchQueue.main.async {
 				table.es.stopPullToRefresh()
 			}

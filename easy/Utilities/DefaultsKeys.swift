@@ -6,10 +6,26 @@
 //  Copyright © 2018 enzosv. All rights reserved.
 //
 
-import SwiftyUserDefaults
+import Foundation
+enum Defaults: String {
+    case isPremiumIncluded
+    case isShowingIgnored
+    case lastRefreshDate
 
-extension DefaultsKeys {
-	static let isPremiumIncluded = DefaultsKey<Bool>("isPremiumIncluded")
-	static let isShowingIgnored = DefaultsKey<Bool>("isShowingIgnored")
-	static let lastRefreshDate = DefaultsKey<Double>("lastRefreshDate")
+    func setValue(_ value: Any) {
+        UserDefaults.standard.setValue(value, forKey: rawValue)
+        UserDefaults.standard.synchronize()
+    }
+
+    func boolValue() -> Bool {
+        UserDefaults.standard.bool(forKey: rawValue)
+    }
+
+    func doubleValue() -> Double {
+        UserDefaults.standard.double(forKey: rawValue)
+    }
+
+    func hasKey() -> Bool {
+        UserDefaults.standard.value(forKey: rawValue) != nil
+    }
 }

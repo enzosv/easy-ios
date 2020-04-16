@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import SwiftyUserDefaults
 
 class FilterListViewController: UIViewController {
 
@@ -32,7 +31,7 @@ class FilterListViewController: UIViewController {
 
 	private let premiumSwitch: UISwitch = {
 		let pswitch = UISwitch()
-		pswitch.isOn = Defaults[.isPremiumIncluded]
+        pswitch.isOn = Defaults.isPremiumIncluded.boolValue()
 		return pswitch
 	}()
 
@@ -53,7 +52,7 @@ class FilterListViewController: UIViewController {
 
 	private let ignoreSwitch: UISwitch = {
 		let iswitch = UISwitch()
-		iswitch.isOn = Defaults[.isShowingIgnored]
+        iswitch.isOn = Defaults.isShowingIgnored.boolValue()
 		return iswitch
 	}()
 
@@ -170,14 +169,14 @@ class FilterListViewController: UIViewController {
 	}
 
 	@objc private func premiumAction(sender: UISwitch) {
-		let newValue = !Defaults[.isPremiumIncluded]
-		Defaults[.isPremiumIncluded] = newValue
+        let newValue = !Defaults.isPremiumIncluded.boolValue()
+        Defaults.isPremiumIncluded.setValue(newValue)
 		postListInputs.setupPosts(sortType: postListInputs.sortType)
 	}
 
 	@objc private func ignoreAction(sender: UISwitch) {
-		let newValue = !Defaults[.isShowingIgnored]
-		Defaults[.isShowingIgnored] = newValue
+        let newValue = !Defaults.isShowingIgnored.boolValue()
+        Defaults.isShowingIgnored.setValue(newValue)
 		postListInputs.setupPosts(sortType: postListInputs.sortType)
 	}
 
