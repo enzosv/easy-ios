@@ -60,6 +60,18 @@ class RealmService {
 		if !Defaults.hasKey(.isPremiumIncluded) {
 			Defaults[.isPremiumIncluded] = true
 		}
+        MediumSessionManager.shared.requestTopics()
+            .done { topics in
+            guard let realm = try? Realm() else {
+                assertionFailure("no realm")
+                return
+            }
+            try? realm.write {
+                realm.add(topics, update: .modified)
+            }
+        }.catch { error in
+            print(error)
+        }
 	}
 
 	func savePosts(_ posts: [Post]) {
@@ -68,7 +80,7 @@ class RealmService {
 			return
 		}
 		try? realm.write {
-			realm.add(posts, update: true)
+            realm.add(posts, update: .modified)
 		}
 //		debugLog("\(posts.count) new or updated posts")
 	}

@@ -9,6 +9,7 @@
 import PromiseKit
 import Alamofire
 import SwiftyJSON
+import RealmSwift
 
 class MediumSessionManager: NSObject {
     static let shared = MediumSessionManager()
@@ -42,6 +43,39 @@ class MediumSessionManager: NSObject {
         super.init()
     }
 
+    func requestTopics() -> Promise<[Topic]> {
+        guard let urlString = Resource.topicList.urlString else {
+            return Promise<[Topic]>(error: PMKError.badInput)
+        }
+        let pending = Promise<[Topic]>.pending()
+        Alamofire.request(urlString)
+        .validate()
+            .responseString { response in
+            let statusCode: Int = response.response?.statusCode ?? -1
+            switch response.result {
+            case .success(let value):
+                debugLog("""
+                ✅ successful request:
+                \n\t\(statusCode): \(urlString)
+                """)
+                guard let dict = MediumSessionManager.sanitizeResponseString(value),
+                    let topics = Topic.getListFromJSON(dict) else {
+                        pending.resolver.fulfill([])
+                        return
+                }
+                pending.resolver.fulfill(topics)
+            case .failure(let error):
+                debugLog("""
+                ⚠️ request failed:
+                \n\t\(statusCode): \(urlString)
+                \n\t\(error.localizedDescription)
+                """)
+                pending.resolver.reject(error)
+            }
+        }
+        return pending.promise
+    }
+
     func request(resource: Resource) -> (dataTask: DataRequest?, promise: Promise<[Post]>) {
         guard
             let urlString = resource.urlString else {
@@ -58,7 +92,9 @@ class MediumSessionManager: NSObject {
         requestQueue.append(urlString)
         let pending = Promise<[Post]>.pending()
         let dataTask = sessionManager.request(urlString)
-        dataTask.responseString { response in
+        dataTask
+        .validate()
+            .responseString { response in
             if let index = self.requestQueue.firstIndex(of: urlString) {
                 debugLog("removing request: \(urlString)")
                 self.requestQueue.remove(at: index)
@@ -92,18 +128,20 @@ class MediumSessionManager: NSObject {
         return (dataTask, pending.promise)
     }
 
-    private func parsePostsFromSuccessfulResponse(_ responseString: String) -> [Post]? {
+    private static func sanitizeResponseString(_ responseString: String) -> [String: JSON]? {
         let jsonString = responseString.deletingPrefix("])}while(1);</x>").deletingSuffix("\"")
         let json = JSON(parseJSON: jsonString)
-        guard
-            let payload = json["payload"].dictionary,
-            let references = payload["references"]?.dictionary else {
-                //happens when search is empty
-                debugLog("⚠️ invalid posts json: \(jsonString)")
-                return nil
+        return json["payload"].dictionary
+    }
+
+    private func parsePostsFromSuccessfulResponse(_ responseString: String) -> [Post]? {
+        guard let payload = MediumSessionManager.sanitizeResponseString(responseString),
+        let references = payload["references"]?.dictionary else {
+            debugLog("⚠️ invalid posts response: \(responseString)")
+            return nil
         }
         guard let posts = references["Post"]?.dictionary else {
-            debugLog("⚠️ empty posts json: \(jsonString)")
+            debugLog("⚠️ empty posts json: \(responseString)")
             return []
         }
         let users = references["User"]?.dictionary

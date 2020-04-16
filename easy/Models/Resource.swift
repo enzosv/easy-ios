@@ -11,10 +11,10 @@ import Foundation.NSError
 private let ROOTURL = "https://medium.com"
 
 public enum ResourceError: Error {
-	case duplicateRequest(urlString:String)
-	case unnecessaryUpdate(urlString:String)
-	case invalidJSON(urlString:String)
-	case other(message:String)
+	case duplicateRequest(urlString: String)
+	case unnecessaryUpdate(urlString: String)
+	case invalidJSON(urlString: String)
+	case other(message: String)
 }
 
 extension ResourceError: LocalizedError {
@@ -34,6 +34,7 @@ extension ResourceError: LocalizedError {
 
 enum Resource {
 	case posts
+    case topicList
 	case topic(String)
 	case tag(String)
 	case search(String)
@@ -43,6 +44,8 @@ enum Resource {
 		switch self {
 		case .posts:
 			return "\(ROOTURL)/_/api/home-feed"
+        case .topicList:
+            return "\(ROOTURL)/_/api/topics/"
 		case .topic(let topicId):
 			return "\(ROOTURL)/_/api/topics/\(topicId)/stream"
 		case .tag(let name):
